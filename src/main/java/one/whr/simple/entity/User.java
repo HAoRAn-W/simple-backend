@@ -1,5 +1,6 @@
 package one.whr.simple.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,7 @@ public class User {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments;
 
     public User(String username, String password, String email, String website, String description) {
