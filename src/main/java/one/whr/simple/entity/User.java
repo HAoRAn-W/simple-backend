@@ -29,6 +29,7 @@ public class User {
     private String username;
 
     @NotBlank
+    @JsonIgnore
     private String password;
 
     @NotBlank
@@ -45,7 +46,7 @@ public class User {
     @JsonIgnore
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Comment> comments;
 
