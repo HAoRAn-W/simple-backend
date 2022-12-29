@@ -46,9 +46,15 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "reply_to")
+    @JsonIgnore
     private Comment parentComment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Comment(String content, LocalDate commentDate) {
+        this.content = content;
+        this.commentDate = commentDate;
+    }
 }
