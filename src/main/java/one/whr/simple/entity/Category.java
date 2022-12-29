@@ -22,7 +22,7 @@ import java.util.List;
 public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cate_id")
-    private String categoryId;
+    private Long categoryId;
 
     @Column(name = "cate_name")
     private String categoryName;
