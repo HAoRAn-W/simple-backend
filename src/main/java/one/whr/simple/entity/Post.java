@@ -1,6 +1,5 @@
 package one.whr.simple.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,7 +46,7 @@ public class Post {
     @JoinColumn(name = "cate_id")
     private Category category;
 
-    @OneToMany(mappedBy = "post")
-    @JsonIgnore
-    private List<Comment> comments;
+//    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private List<Comment> comments;
 }

@@ -27,8 +27,8 @@ public class Comment {
 
     private String content;
 
-//    @Column(name = "post_id")
-//    private Long postId;
+    @Column(name = "post_id")
+    private Long postId;
 
     @Column(name = "comment_date")
     private LocalDate commentDate;
@@ -36,10 +36,10 @@ public class Comment {
     @Column(name = "like_cnt")
     private Integer likeCnt;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    @JsonIgnore
-    private Post post;
+//    @ManyToOne
+//    @JoinColumn(name = "post_id")
+//    @JsonIgnore
+//    private Post post;
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
     private List<Comment> childComments;
@@ -53,8 +53,9 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment(String content, LocalDate commentDate) {
+    public Comment(String content, LocalDate commentDate, int likeCnt) {
         this.content = content;
         this.commentDate = commentDate;
+        this.likeCnt = likeCnt;
     }
 }
