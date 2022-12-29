@@ -4,9 +4,11 @@ import one.whr.simple.dto.request.CommentRequest;
 import one.whr.simple.dto.response.CommentListResponse;
 import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.entity.Comment;
+import one.whr.simple.entity.Reply;
 import one.whr.simple.entity.User;
 import one.whr.simple.repository.CommentRepository;
 import one.whr.simple.repository.PostRepository;
+import one.whr.simple.repository.ReplyRepository;
 import one.whr.simple.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -38,10 +40,13 @@ public class CommentController {
     @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    ReplyRepository replyRepository;
+
     @GetMapping("/all")
     public ResponseEntity<?> showAllComments(@RequestParam Long postId,
                                              @RequestParam(defaultValue = "1") int page,
-                                             @RequestParam(defaultValue = "2") int pageSize,
+                                             @RequestParam(defaultValue = "20") int pageSize,
                                              @RequestParam(defaultValue = "commentDate-desc") String sort) {
         try {
             String[] sortArr = sort.split("-");
@@ -63,21 +68,26 @@ public class CommentController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addComment(@RequestBody CommentRequest commentRequest) {
-        Comment comment = new Comment(commentRequest.getContent(), LocalDate.now(), 0);
+
         try {
             User user = userRepository.findById(commentRequest.getUserId()).orElseThrow(() -> new RuntimeException("no user"));
-            comment.setUser(user);
+            if (commentRequest.getType() == 1) { // TODO add constant
+                Reply reply = new Reply(commentRequest.getContent(), LocalDate.now(), 0);
+                reply.setUser(user);
+
+                Comment comment = commentRepository.findById(commentRequest.getParentId()).orElseThrow(() -> new RuntimeException("no parent comment"));
+                reply.setParentComment(comment);
+
+                replyRepository.save(reply);
+            } else {
+                Comment comment = new Comment(commentRequest.getContent(), LocalDate.now(), 0);
+                comment.setUser(user);
 
 //            Post post = postRepository.findById(commentRequest.getPostId()).orElseThrow(() -> new RuntimeException("no post"));
-            comment.setPostId(commentRequest.getPostId());
+                comment.setPostId(commentRequest.getPostId());
 
-            Long replyToId = commentRequest.getReplyToId();
-            if (replyToId != null) {
-                Comment parent = commentRepository.findById(replyToId).orElseThrow(() -> new RuntimeException("no comment"));
-                comment.setParentComment(parent);
+                commentRepository.save(comment);
             }
-
-            commentRepository.save(comment);
             return ResponseEntity.ok().body(new MessageResponse("COMMENT_SUCCESS", "comment success"));
 
         } catch (RuntimeException e) {
