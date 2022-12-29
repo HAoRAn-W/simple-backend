@@ -5,7 +5,6 @@ import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.PostDetailResponse;
 import one.whr.simple.dto.response.PostListResponse;
 import one.whr.simple.entity.Category;
-import one.whr.simple.entity.Comment;
 import one.whr.simple.entity.Post;
 import one.whr.simple.entity.Tag;
 import one.whr.simple.repository.CategoryRepository;
@@ -50,11 +49,11 @@ public class PostController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllPosts(@RequestParam(defaultValue = "1") int page,
                                          @RequestParam(defaultValue = "10") int pageSize,
-                                         @RequestParam(defaultValue = "createdDate,asc") String[] sort) {
+                                         @RequestParam(defaultValue = "createdDate-desc") String sort) {
         try {
-
-            String sortField = sort[0];
-            Direction sortDirection = sort[1].equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            String[] sortArr = sort.split("-");
+            String sortField = sortArr[0];
+            Direction sortDirection = sortArr[1].equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             Order order = new Order(sortDirection, sortField);
 
             Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
@@ -73,8 +72,8 @@ public class PostController {
     public ResponseEntity<?> getPost(@RequestParam long postId) {
         try {
             Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("no post found"));
-            List<Comment> comments = post.getComments();
-            return ResponseEntity.ok().body(new PostDetailResponse(post, comments));
+//            List<Comment> comments = post.getComments();
+            return ResponseEntity.ok().body(new PostDetailResponse(post));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("NO_POST", "no post!"));
         }
