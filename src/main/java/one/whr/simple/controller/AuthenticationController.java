@@ -1,9 +1,9 @@
 package one.whr.simple.controller;
 
-import one.whr.simple.dto.Request.LoginRequest;
-import one.whr.simple.dto.Request.SignupRequest;
-import one.whr.simple.dto.Response.MessageResponse;
-import one.whr.simple.dto.Response.UserInfoResponse;
+import one.whr.simple.dto.request.LoginRequest;
+import one.whr.simple.dto.request.SignupRequest;
+import one.whr.simple.dto.response.MessageResponse;
+import one.whr.simple.dto.response.UserInfoResponse;
 import one.whr.simple.entity.Role;
 import one.whr.simple.entity.User;
 import one.whr.simple.repository.RoleRepository;

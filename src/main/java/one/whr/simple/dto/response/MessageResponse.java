@@ -1,4 +1,4 @@
-package one.whr.simple.dto.Response;
+package one.whr.simple.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
