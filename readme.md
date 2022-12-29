@@ -9,12 +9,12 @@
 
 ## TODO list
 
-[] redis + like/dislike feature (post and comment)
+- [ ] redis + like/dislike feature (post and comment)
 
-[] user forget password and reset password
+- [ ] user forget password and reset password
 
-[] manage users
+- [ ] manage users
 
-[] exceptions
+- [ ] exceptions
 
-[] error messages
+- [ ] error messages
