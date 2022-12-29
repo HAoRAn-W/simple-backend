@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 // TODO exception and error message, error logs
@@ -92,6 +93,8 @@ public class PostController {
 
             Category category = categoryRepository.findById(postEditRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("post not found"));
             post.setCategory(category);
+
+            post.setModifiedDate(LocalDate.now());
 
             postRepository.save(post);
             return ResponseEntity.ok(new MessageResponse("EDIT_SUCCESSFUL", "edit post successfully!"));
