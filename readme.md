@@ -1,11 +1,26 @@
 # Simple, a blog website project (back-end)
 
-## Tech stack
+## Framework
 
-1. Spring-boot 2.7.7
-2. Java 8
-3. Spring Data JPA + Hibernate
-4. Spring Security + JJWT
+1. Spring-boot 2.7.7 + Java 8
+2. Spring Data JPA + Hibernate
+3. Spring Security + JJWT
+
+## Structure
+```bash
+simple
+    ├───controller
+    ├───dto
+    │   ├───request
+    │   └───response
+    ├───entity
+    ├───exception
+    ├───repository
+    ├───security
+    │   └───jwt
+    ├───service
+    └───util
+```
 
 ## TODO list
 
@@ -18,3 +33,7 @@
 - [ ] exceptions
 
 - [ ] error messages
+
+- [ ] show posts of same tag
+
+- [ ] show posts of same category
