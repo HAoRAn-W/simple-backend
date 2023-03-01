@@ -26,7 +26,7 @@ simple
 
 ### Authentication: `/api/auth`
 authentication-related endpoints, like login/logout, signup.
-#### Login: `/login` POST
+#### 1. Login: `/login` POST
 Request:
 ```json
 {
@@ -34,7 +34,7 @@ Request:
   "password": "password"
 }
 ```
-#### Signup: `/signup` POST
+#### 2. Signup: `/signup` POST
 Request: 
 ```json
 {
@@ -45,11 +45,11 @@ Request:
   "description": "optional"
 }
 ```
-#### Logout: `/logout` POST
+#### 3. Logout: `/logout` POST
 empty body
 
 ### Post: `/api/post`
-#### All posts (pagination) `/all` GET
+#### 1. All posts (pagination) `/all` GET
 Get all posts, paginated.
 
 Request params:
@@ -60,10 +60,10 @@ pageSize(10)
 
 sort(createdDate-desc)
 
-#### Post detail page: `/detail` GET
+#### 2. Post detail page: `/detail` GET
 Request param: postId
 
-### Edit post: `/edit` PUT
+#### 3. Edit post: `/edit` PUT
 Request:
 ```json
 {
@@ -75,7 +75,7 @@ Request:
   "categoryId": 12
 }
 ```
-#### Delete post: `/delete`
+#### 4. Delete post: `/delete`
 Request param: postId
 
 
