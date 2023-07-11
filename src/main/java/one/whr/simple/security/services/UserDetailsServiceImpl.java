@@ -2,7 +2,6 @@ package one.whr.simple.security.services;
 
 import one.whr.simple.entity.User;
 import one.whr.simple.repository.UserRepository;
-import one.whr.simple.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
