@@ -1,26 +1,39 @@
 package one.whr.simple.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import one.whr.simple.constant.EnumRole;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "ROLE")
-@Getter
-@Setter
-@NoArgsConstructor
+@Table(name = "ROLES")
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long roleId;
+    private Long id;
 
-    @Column(name = "role_name")
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private EnumRole name;
+
+    public Role() {
+    }
+
+    public Role(EnumRole name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public EnumRole getName() {
+        return name;
+    }
+
+    public void setName(EnumRole name) {
+        this.name = name;
+    }
 }

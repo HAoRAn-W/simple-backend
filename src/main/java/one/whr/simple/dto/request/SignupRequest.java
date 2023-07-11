@@ -7,25 +7,43 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
 public class SignupRequest {
     @NotBlank
     @Size(min = 4, max = 20)
     private String username;
 
     @NotBlank
+    @Email
     private String email;
 
     @NotBlank
-    @Email
+    @Size(min = 12, max = 120)
     private String password;
 
-    private String website;
 
-    private String description;
+    public String getUsername() {
+        return username;
+    }
 
-//    private Set<String> roles;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

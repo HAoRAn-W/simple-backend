@@ -8,7 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
-import one.whr.simple.security.UserDetailsImpl;
+import one.whr.simple.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
@@ -34,8 +34,6 @@ public class JwtUtils {
 
     @Value("${whr.app.security.jwtCookieName}")
     private String jwtCookieName;
-
-    private SecretKey key;
 
     /**
      * generate a JWT token using username
@@ -73,7 +71,7 @@ public class JwtUtils {
      * @param request http requests
      * @return token
      */
-    public String getTokenFromCookie(HttpServletRequest request) {
+    public String getJwtTokenFromCookie(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
         if (cookie != null) {
             return cookie.getValue();
@@ -89,10 +87,9 @@ public class JwtUtils {
      * @param token JWT token
      * @return if the token is valid
      */
-    public boolean validateToken(String token) {
+    public boolean validateJwtToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-
+            Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
             log.error("JWT token already expired: {}", e.getMessage());
@@ -115,14 +112,11 @@ public class JwtUtils {
      * @return username
      */
     public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     private SecretKey getKey() {
-        if (key == null) {
-            key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-        }
-        return key;
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
 }

@@ -1,5 +1,7 @@
 package one.whr.simple.controller;
 
+import one.whr.simple.constant.EnumRole;
+import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.request.LoginRequest;
 import one.whr.simple.dto.request.SignupRequest;
 import one.whr.simple.dto.response.MessageResponse;
@@ -8,7 +10,7 @@ import one.whr.simple.entity.Role;
 import one.whr.simple.entity.User;
 import one.whr.simple.repository.RoleRepository;
 import one.whr.simple.repository.UserRepository;
-import one.whr.simple.security.UserDetailsImpl;
+import one.whr.simple.security.services.UserDetailsImpl;
 import one.whr.simple.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +48,7 @@ public class AuthenticationController {
     RoleRepository roleRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    PasswordEncoder encoder;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -55,42 +57,42 @@ public class AuthenticationController {
     public ResponseEntity<?> userLogin(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
-
     }
 
-    @PostMapping("/signup")
+    @PostMapping("signup")
     public ResponseEntity<?> userSignup(@Valid @RequestBody SignupRequest signupRequest) {
-        // check username exists or not
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
-            return  ResponseEntity.badRequest().body(new MessageResponse("USER_EXIST", "user exists!"));
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_EXIST, "Username is already taken"));
         }
-
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            return  ResponseEntity.badRequest().body(new MessageResponse("EMAIL_EXIST", "email exists!"));
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.EMAIL_EXIST, "Username is already taken"));
         }
 
-        User user = new User(signupRequest.getUsername(), passwordEncoder.encode(signupRequest.getPassword()), signupRequest.getEmail(), signupRequest.getWebsite(), signupRequest.getDescription());
+        User user = new User(signupRequest.getUsername(), signupRequest.getEmail(), encoder.encode(signupRequest.getPassword()));
+        Set<Role> roleSet = new HashSet<>();
+        Role userRole = roleRepository.findByName(EnumRole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roleSet.add(userRole);
+        user.setRoles(roleSet);
 
-        Set<Role> roles = new HashSet<>();
-        Role role = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new RuntimeException("ERROR: Cannot find role"));
-        roles.add(role);
-
-        user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("SIGNUP_SUCCESSFUL", "registered successfully!"));
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SIGNUP_SUCCESSFUL, "Successfully signup user"));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> userLogout() {
+    public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = jwtUtils.generateEmptyCookie();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("LOGGED_OUT", "logged out"));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new MessageResponse(MessageCode.LOGGED_OUT, "You've been logged out!"));
     }
 
 }
