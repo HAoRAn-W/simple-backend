@@ -9,17 +9,17 @@
 ## Structure
 ```bash
 simple
+    ├───constant
     ├───controller
     ├───dto
     │   ├───request
     │   └───response
     ├───entity
-    ├───exception
     ├───repository
     ├───security
-    │   └───jwt
-    ├───service
-    └───util
+    │   ├───jwt
+    │   └───services
+    └───service
 ```
 
 ## Endpoints
@@ -40,44 +40,11 @@ Request:
 {
   "username": "unique username",
   "email": "unique email",
-  "password": "password",
-  "website": "optional",
-  "description": "optional"
+  "password": "password"
 }
 ```
 #### 3. Logout: `/logout` POST
 empty body
-
-### Post: `/api/post`
-#### 1. All posts (pagination) `/all` GET
-Get all posts, paginated.
-
-Request params:
-
-page(1)
-
-pageSize(10)
-
-sort(createdDate-desc)
-
-#### 2. Post detail page: `/detail` GET
-Request param: postId
-
-#### 3. Edit post: `/edit` PUT
-Request:
-```json
-{
-  "postId": 86,
-  "content": "test_42e3794946e3",
-  "tagIds": [
-    51
-  ],
-  "categoryId": 12
-}
-```
-#### 4. Delete post: `/delete`
-Request param: postId
-
 
 ## TODO list
 
