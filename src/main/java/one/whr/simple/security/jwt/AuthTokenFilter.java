@@ -1,5 +1,6 @@
 package one.whr.simple.security.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import one.whr.simple.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

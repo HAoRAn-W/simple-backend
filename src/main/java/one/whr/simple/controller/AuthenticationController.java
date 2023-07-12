@@ -8,6 +8,7 @@ import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.UserInfoResponse;
 import one.whr.simple.entity.Role;
 import one.whr.simple.entity.User;
+import one.whr.simple.exceptions.UserNotFoundException;
 import one.whr.simple.repository.RoleRepository;
 import one.whr.simple.repository.UserRepository;
 import one.whr.simple.security.services.UserDetailsImpl;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
@@ -60,10 +62,13 @@ public class AuthenticationController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+        ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString())
                 .body(new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
     }
 
@@ -91,8 +96,26 @@ public class AuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = jwtUtils.generateEmptyCookie();
+        ResponseCookie refreshCookie = jwtUtils.generateEmptyRefreshCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(new MessageResponse(MessageCode.LOGGED_OUT, "You've been logged out!"));
     }
 
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) throws UserNotFoundException {
+        String refreshToken = jwtUtils.getRefreshJwtTokenFromCookie(request);
+        if (refreshToken != null && refreshToken.length() > 0) {
+            if (jwtUtils.validateJwtRefreshToken(refreshToken)) {
+                String username = jwtUtils.getUsernameFromToken(refreshToken);
+                User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("user not found"));
+                ResponseCookie newAccessToken = jwtUtils.generateJwtCookie(user.getUsername());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, newAccessToken.toString())
+                        .body(new MessageResponse(MessageCode.ACCESS_TOKEN_RENEWED, "Access token renewed"));
+            }
+        }
+
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.REFRESH_TOKEN_EXPIRED, "Refresh token expired"));
+    }
 }
