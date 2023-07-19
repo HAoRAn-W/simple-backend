@@ -8,13 +8,15 @@ public interface MessageCode {
 
     int LOGIN_FAILED = 103;
 
-    int SIGNUP_SUCCESSFUL = 200;
-
     int LOGGED_OUT = 201;
 
     int REFRESH_TOKEN_EXPIRED = 202;
 
     int ACCESS_TOKEN_RENEWED = 203;
+
+    int SUCCESSFUL = 233;
+
+    int CATEGORY_NOT_FOUND = 300;
 
 
 }
