@@ -2,7 +2,7 @@ package one.whr.simple.dto.response;
 
 
 import java.util.List;
-public class UserInfoResponse {
+public class UserInfoResponse extends MessageResponse{
     private Long id;
 
     private String username;
@@ -11,7 +11,12 @@ public class UserInfoResponse {
 
     private List<String> roles;
 
-    public UserInfoResponse(Long id, String username, String email, List<String> roles) {
+    public UserInfoResponse(int code, String message) {
+        super(code, message);
+    }
+
+    public UserInfoResponse(int code, String message, Long id, String username, String email, List<String> roles) {
+        super(code, message);
         this.id = id;
         this.username = username;
         this.email = email;

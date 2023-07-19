@@ -71,10 +71,10 @@ public class AuthenticationController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                     .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString())
-                    .body(new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+                    .body(new UserInfoResponse(MessageCode.SUCCESSFUL, "Login successful", userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
         } catch (AuthenticationException e) {
             return ResponseEntity.ok()
-                    .body(new MessageResponse(MessageCode.LOGIN_FAILED, "Failed to login. Please check username or password"));
+                    .body(new UserInfoResponse(MessageCode.LOGIN_FAILED, "Login failed"));
         }
 
     }
@@ -99,7 +99,7 @@ public class AuthenticationController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SIGNUP_SUCCESSFUL, "Successfully signup user"));
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Successfully signup user"));
     }
 
     @PostMapping("/logout")
@@ -110,21 +110,4 @@ public class AuthenticationController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(new MessageResponse(MessageCode.LOGGED_OUT, "You've been logged out!"));
     }
-
-//    @PostMapping("/refreshtoken")
-//    public ResponseEntity<?> refreshToken(HttpServletRequest request) throws UserNotFoundException {
-//        String refreshToken = jwtUtils.getRefreshJwtTokenFromCookie(request);
-//        if (refreshToken != null && refreshToken.length() > 0) {
-//            if (jwtUtils.validateJwtRefreshToken(refreshToken)) {
-//                String username = jwtUtils.getUsernameFromToken(refreshToken);
-//                User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("user not found"));
-//                ResponseCookie newAccessToken = jwtUtils.generateJwtCookie(user.getUsername());
-//                return ResponseEntity.ok()
-//                        .header(HttpHeaders.SET_COOKIE, newAccessToken.toString())
-//                        .body(new MessageResponse(MessageCode.ACCESS_TOKEN_RENEWED, "Access token renewed"));
-//            }
-//        }
-//
-//        return ResponseEntity.ok().body(new MessageResponse(MessageCode.REFRESH_TOKEN_EXPIRED, "Refresh token expired"));
-//    }
 }

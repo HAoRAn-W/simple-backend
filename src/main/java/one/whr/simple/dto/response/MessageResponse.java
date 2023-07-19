@@ -2,9 +2,9 @@ package one.whr.simple.dto.response;
 
 
 public class MessageResponse {
-    private int code;
+    protected int code;
 
-    private String message;
+    protected String message;
 
     public MessageResponse(int code, String message) {
         this.code = code;
