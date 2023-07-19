@@ -6,6 +6,8 @@ public interface MessageCode {
 
     int USER_NOTFOUND = 102;
 
+    int LOGIN_FAILED = 103;
+
     int SIGNUP_SUCCESSFUL = 200;
 
     int LOGGED_OUT = 201;
