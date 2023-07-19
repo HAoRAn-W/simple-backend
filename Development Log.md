@@ -13,3 +13,5 @@ correction:
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roleSet.add(userRole);
 ```
+
+Http-Only is secure
