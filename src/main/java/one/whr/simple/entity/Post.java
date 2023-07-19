@@ -25,8 +25,9 @@ public class Post {
     @NotBlank
     private String description;
 
-    @NotBlank
-    private String content;
+    @Column(columnDefinition = "LONGBLOB")
+    @NotNull
+    private byte[] content;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -36,7 +37,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(String title, String description, String content) {
+    public Post(String title, String description, byte[] content) {
         this.title = title;
         this.description = description;
         this.content = content;
@@ -82,11 +83,11 @@ public class Post {
         this.description = description;
     }
 
-    public String getContent() {
+    public byte[] getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 

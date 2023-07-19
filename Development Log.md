@@ -15,3 +15,5 @@ correction:
 ```
 
 Http-Only is secure
+
+when svaing content, receiving Data truncation: Data too long for column 'content' at row 1 => change content from string to BLOB byte[]

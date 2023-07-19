@@ -43,7 +43,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ResponseEntity<?> addNewPost(@RequestBody PostCreationRequest request) {
         try{
-            Post newPost = new Post(request.getTitle(), request.getDescription(), request.getContent());
+            Post newPost = new Post(request.getTitle(), request.getDescription(), request.getContent().getBytes());
             newPost.setCreatedTime(LocalDateTime.now());
 
             Category category = categoryService.findById(request.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Can't find post"));
