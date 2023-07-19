@@ -7,6 +7,7 @@ import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.PostPageResponse;
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
+import one.whr.simple.entity.projection.PostInfo;
 import one.whr.simple.exceptions.CategoryNotFoundException;
 import one.whr.simple.service.CategoryService;
 import one.whr.simple.service.PostService;
@@ -33,8 +34,9 @@ public class PostController {
 
     @GetMapping("/{pageNo}")
     ResponseEntity<?> getPageList(@PathVariable int pageNo) {
-        Page<Post> postPage = postService.getPaginatedPosts(pageNo, 1);
-        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful",postPage.toList()));
+        Page<PostInfo> postPage = postService.getPaginatedPosts(pageNo, 10);
+
+        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful",postPage.toList(), postPage.getTotalPages()));
     }
 
     @PostMapping("/add")
