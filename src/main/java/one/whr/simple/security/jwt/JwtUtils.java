@@ -60,12 +60,12 @@ public class JwtUtils {
 
     public ResponseCookie generateRefreshJwtCookie(UserDetailsImpl userDetails) {
         String refreshToken = generateRefreshTokenByUsername(userDetails.getUsername());
-        return ResponseCookie.from(jwtRefreshCookieName, refreshToken).path("/api/auth/refreshtoken").maxAge(jwtRefreshExpirationMs / 1000).httpOnly(true).build();
+        return ResponseCookie.from(jwtRefreshCookieName, refreshToken).path("/api/refresh").maxAge(jwtRefreshExpirationMs / 1000).httpOnly(true).build();
     }
 
     public ResponseCookie generateRefreshJwtCookie(String username) {
         String refreshToken = generateRefreshTokenByUsername(username);
-        return ResponseCookie.from(jwtRefreshCookieName, refreshToken).path("/api/auth/refreshtoken").maxAge(jwtRefreshExpirationMs / 1000).httpOnly(true).build();
+        return ResponseCookie.from(jwtRefreshCookieName, refreshToken).path("/api/refresh").maxAge(jwtRefreshExpirationMs / 1000).httpOnly(true).build();
     }
 
     /**
@@ -78,7 +78,7 @@ public class JwtUtils {
     }
 
     public ResponseCookie generateEmptyRefreshCookie() {
-        return ResponseCookie.from(jwtRefreshCookieName, null).path("/api/auth/refreshtoken").build();
+        return ResponseCookie.from(jwtRefreshCookieName, null).path("/api/refresh").build();
     }
 
     /**
