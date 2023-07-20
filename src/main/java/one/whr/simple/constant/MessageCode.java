@@ -18,5 +18,7 @@ public interface MessageCode {
 
     int CATEGORY_NOT_FOUND = 300;
 
+    int POST_NOT_FOUND = 301;
+
 
 }
