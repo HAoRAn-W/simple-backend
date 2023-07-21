@@ -64,7 +64,7 @@ public class PostController {
             if (request.getCategoryId() != null) {
                 category = categoryService.findById(request.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Can't find post"));
             } else {
-                category = categoryService.findById(2L).orElseThrow(() -> new CategoryNotFoundException("Can't find post")); // default category;
+                category = categoryService.findById(1L).orElseThrow(() -> new CategoryNotFoundException("Can't find post")); // default category;
             }
             newPost.setCategory(category);
 
@@ -86,6 +86,7 @@ public class PostController {
             post.setTitle(request.getTitle());
             post.setDescription(request.getDescription());
             post.setContent(request.getContent().getBytes());
+            post.setUpdatedTime(LocalDateTime.now());
 
             Category category = categoryService.findById(request.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Can't find post"));
             post.setCategory(category);
