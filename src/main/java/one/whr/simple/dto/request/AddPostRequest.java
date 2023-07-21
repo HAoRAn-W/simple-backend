@@ -1,15 +1,15 @@
 package one.whr.simple.dto.request;
 
-public class PostCreationRequest {
+public class AddPostRequest {
     private String title;
     private String description;
     private String content;
 
     private Long categoryId;
 
-    public PostCreationRequest() {}
+    public AddPostRequest() {}
 
-    public PostCreationRequest(String title, String description, String content, Long categoryId) {
+    public AddPostRequest(String title, String description, String content, Long categoryId) {
         this.title = title;
         this.description = description;
         this.content = content;

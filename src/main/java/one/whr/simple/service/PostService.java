@@ -28,4 +28,8 @@ public class PostService {
     public Post getPost(Long id) throws PostNotFoundException {
         return postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Can't find post with this id"));
     }
+
+    public void updatePost(Post post) {
+        postRepository.save(post);
+    }
 }
