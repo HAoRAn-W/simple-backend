@@ -1,5 +1,7 @@
 package one.whr.simple.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -29,6 +31,11 @@ public class User {
     @NotBlank
     @Size(min = 12, max = 60)
     private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "post_id"))
+    @JsonIgnore
+    private Set<Post> favorites = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -84,5 +91,13 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<Post> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(Set<Post> favorites) {
+        this.favorites = favorites;
     }
 }

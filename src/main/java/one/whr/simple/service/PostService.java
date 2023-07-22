@@ -1,7 +1,7 @@
 package one.whr.simple.service;
 
 import one.whr.simple.entity.Post;
-import one.whr.simple.entity.projection.PostInfo;
+import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class PostService {
     @Autowired
     PostRepository postRepository;
 
-    public Page<PostInfo> getPaginatedPosts(int page, int size) {
+    public Page<PostProjection> getPaginatedPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
         return postRepository.findAllBy(pageable);
     }

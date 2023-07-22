@@ -4,7 +4,7 @@ import one.whr.simple.entity.Category;
 
 import java.time.LocalDateTime;
 
-public interface PostInfo {
+public interface PostProjection {
     Long getId();
 
     LocalDateTime getCreatedTime();
