@@ -23,6 +23,9 @@ public class Post {
     private String title;
 
     @NotBlank
+    private String coverUrl;
+
+    @NotBlank
     private String description;
 
     @Column(columnDefinition = "LONGBLOB")
@@ -37,10 +40,11 @@ public class Post {
     public Post() {
     }
 
-    public Post(String title, String description, byte[] content) {
+    public Post(String title, String description, byte[] content, String coverUrl) {
         this.title = title;
         this.description = description;
         this.content = content;
+        this.coverUrl = coverUrl;
     }
 
     public Long getId() {
@@ -73,6 +77,14 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 
     public String getDescription() {

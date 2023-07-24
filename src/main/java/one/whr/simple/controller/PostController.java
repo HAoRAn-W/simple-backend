@@ -58,7 +58,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ResponseEntity<?> addNewPost(@RequestBody AddPostRequest request) {
         try{
-            Post newPost = new Post(request.getTitle(), request.getDescription(), request.getContent().getBytes());
+            Post newPost = new Post(request.getTitle(), request.getDescription(), request.getContent().getBytes(), request.getCoverUrl());
             newPost.setCreatedTime(LocalDateTime.now());
             Category category;
             if (request.getCategoryId() != null) {
@@ -99,4 +99,6 @@ public class PostController {
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Can't find category to update"));
         }
     }
+
+
 }

@@ -16,4 +16,6 @@ public interface PostProjection {
     String getDescription();
 
     Category getCategory();
+
+    String getCoverUrl();
 }

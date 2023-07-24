@@ -5,6 +5,8 @@ public class AddPostRequest {
     private String description;
     private String content;
 
+    private String coverUrl;
+
     private Long categoryId;
 
     public AddPostRequest() {}
@@ -46,5 +48,13 @@ public class AddPostRequest {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }
