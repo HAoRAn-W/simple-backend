@@ -3,12 +3,10 @@ package one.whr.simple.dto.response.entity;
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+// String type content
 public class StrPost {
     private Long id;
 
