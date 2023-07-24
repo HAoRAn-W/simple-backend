@@ -2,16 +2,17 @@ package one.whr.simple.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import one.whr.simple.constant.MessageCode;
+import one.whr.simple.dto.request.AddCategoryRequest;
 import one.whr.simple.dto.response.CategoryListResponse;
+import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.entity.Category;
 import one.whr.simple.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -27,6 +28,16 @@ public class CategoryController {
         List<Category> categories = categoryService.findAll();
         return ResponseEntity.ok().body(new CategoryListResponse(MessageCode.SUCCESSFUL, "Get category list successful", categories));
     }
+
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> addCategory(@RequestBody AddCategoryRequest request) {
+        Category category = new Category(request.getName(), request.getCoverUrl());
+        categoryService.addCategory(category);
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Add category successful"));
+    }
+
+
 
 
 }

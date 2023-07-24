@@ -1,5 +1,6 @@
 package one.whr.simple.repository;
 
+import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
 import one.whr.simple.entity.projection.PostProjection;
 import org.springframework.data.domain.Page;
@@ -17,5 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // not work on findAll, workaround: findAllBy
     // https://stackoverflow.com/a/48195670/17382357
     Page<PostProjection> findAllBy(Pageable pageable);
+
+    Page<PostProjection> findAllByCategory(Category category, Pageable pageable);
 
 }

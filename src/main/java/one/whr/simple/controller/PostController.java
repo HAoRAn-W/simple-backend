@@ -38,8 +38,19 @@ public class PostController {
     @GetMapping("/page/{pageNo}")
     ResponseEntity<?> getPageList(@PathVariable int pageNo) {
         Page<PostProjection> postPage = postService.getPaginatedPosts(pageNo, 5);
+        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
+    }
 
-        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful",postPage.toList(), postPage.getTotalPages()));
+    @GetMapping("/{categoryId}/page/{pageNo}")
+    ResponseEntity<?> getPageListByCategory(@PathVariable Long categoryId, @PathVariable int pageNo) {
+        try {
+            Category category = categoryService.findById(categoryId);
+            Page<PostProjection> postPage = postService.getPaginatedPostsByCategory(pageNo, 5, category);
+            return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
+
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "cannot find category"));
+        }
     }
 
     @GetMapping("{postId}")
@@ -57,14 +68,14 @@ public class PostController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ResponseEntity<?> addNewPost(@RequestBody AddPostRequest request) {
-        try{
+        try {
             Post newPost = new Post(request.getTitle(), request.getDescription(), request.getContent().getBytes(), request.getCoverUrl());
             newPost.setCreatedTime(LocalDateTime.now());
             Category category;
             if (request.getCategoryId() != null) {
-                category = categoryService.findById(request.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Can't find post"));
+                category = categoryService.findById(request.getCategoryId());
             } else {
-                category = categoryService.findById(1L).orElseThrow(() -> new CategoryNotFoundException("Can't find post")); // default category;
+                category = categoryService.findById(1L);
             }
             newPost.setCategory(category);
 
@@ -88,7 +99,7 @@ public class PostController {
             post.setContent(request.getContent().getBytes());
             post.setUpdatedTime(LocalDateTime.now());
 
-            Category category = categoryService.findById(request.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Can't find post"));
+            Category category = categoryService.findById(request.getCategoryId());
             post.setCategory(category);
             postService.updatePost(post);
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update post successfully"));

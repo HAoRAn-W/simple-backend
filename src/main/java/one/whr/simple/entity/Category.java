@@ -7,25 +7,32 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
-@Table(name = "CATEGORIES")
+@Table(name = "CATEGORIES",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "name")
+})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
+    @Column(unique = true)
     private String name;
+
+    @NotBlank
+    private String coverUrl;
 
     @OneToMany(mappedBy = "category")
     @JsonIgnore  // REMEMBER to add @JsonIgnore, otherwise will cause infinite loop.
     private List<Post> posts;
 
-    public Category() {
+    public Category(String name, String coverUrl) {
+        this.name = name;
+        this.coverUrl = coverUrl;
     }
 
-    public Category(String name, List<Post> posts) {
-        this.name = name;
-        this.posts = posts;
+    public Category() {
+
     }
 
     public Long getId() {
@@ -50,5 +57,13 @@ public class Category {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }
