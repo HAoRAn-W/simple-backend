@@ -22,6 +22,8 @@ public class StrPost {
 
     private Category category;
 
+    private String coverUrl;
+
     public StrPost() {
     }
 
@@ -33,6 +35,7 @@ public class StrPost {
         this.description = post.getDescription();
         this.content = new String(post.getContent(), StandardCharsets.UTF_8);
         this.category = post.getCategory();
+        this.coverUrl = post.getCoverUrl();
     }
 
     public Long getId() {
@@ -89,5 +92,13 @@ public class StrPost {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }
