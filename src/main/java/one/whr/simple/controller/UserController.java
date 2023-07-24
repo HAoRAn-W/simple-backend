@@ -35,7 +35,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/favorite/{postId}")
+    @GetMapping("/favorite/add/{postId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     ResponseEntity<?> addFavorite(HttpServletRequest request, @PathVariable Long postId) {
         Post post;
@@ -52,6 +52,44 @@ public class UserController {
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "Can't find user"));
         }
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Favorite post saved"));
+    }
+
+    @GetMapping("/favorite/remove/{postId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> removeFavorite(HttpServletRequest request, @PathVariable Long postId) {
+        Post post;
+        String token = jwtUtils.getJwtTokenFromCookie(request);
+        String username = jwtUtils.getUsernameFromToken(token);
+        try {
+            post = postService.getPost(postId);
+            User user = userService.findByUsername(username);
+            user.getFavorites().remove(post);
+            userService.save(user);
+        } catch (PostNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, "Can't find post"));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "Can't find user"));
+        }
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Favorite post removed"));
+    }
+
+    @GetMapping("/favorite/{postId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> queryFavorite(HttpServletRequest request, @PathVariable Long postId) {
+        String token = jwtUtils.getJwtTokenFromCookie(request);
+        String username = jwtUtils.getUsernameFromToken(token);
+        try {
+            Post post = postService.getPost(postId);
+            User user = userService.findByUsername(username);
+            if (!user.getFavorites().contains(post)) {
+                return ResponseEntity.ok().body(new MessageResponse(MessageCode.NOT_IN_FAVORITE, "Not in favorite"));
+            }
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "Can't find user"));
+        } catch (PostNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, "Can't find post"));
+        }
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.IS_IN_FAVORITE, "In favorite"));
     }
 
     @GetMapping("/favorite/all")

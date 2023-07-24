@@ -20,5 +20,9 @@ public interface MessageCode {
 
     int POST_NOT_FOUND = 301;
 
+    int IS_IN_FAVORITE = 400;
+
+    int NOT_IN_FAVORITE = 401;
+
 
 }
