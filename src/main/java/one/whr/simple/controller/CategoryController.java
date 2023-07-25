@@ -3,9 +3,11 @@ package one.whr.simple.controller;
 import lombok.extern.slf4j.Slf4j;
 import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.request.AddCategoryRequest;
+import one.whr.simple.dto.request.UpdateCategoryRequest;
 import one.whr.simple.dto.response.CategoryListResponse;
 import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.entity.Category;
+import one.whr.simple.exceptions.CategoryNotFoundException;
 import one.whr.simple.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,22 @@ public class CategoryController {
         Category category = new Category(request.getName(), request.getCoverUrl());
         categoryService.addCategory(category);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Add category successful"));
+    }
+
+    @PostMapping("/update")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> updateCategory(@RequestBody UpdateCategoryRequest request) {
+        try{
+            Category category = categoryService.findById(request.getId());
+            category.setName(request.getName());
+            category.setCoverUrl(request.getCoverUrl());
+            categoryService.addCategory(category);
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update category successful"));
+
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Cannot find category"));
+        }
+
     }
 
 
