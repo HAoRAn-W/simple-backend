@@ -1,5 +1,7 @@
 package one.whr.simple.dto.request;
 
+import java.util.Set;
+
 public class UpdatePostRequest {
 
     private Long id;
@@ -9,14 +11,9 @@ public class UpdatePostRequest {
 
     private Long categoryId;
 
+    private String coverUrl;
 
-    public UpdatePostRequest(Long id, String title, String description, String content, Long categoryId) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.content = content;
-        this.categoryId = categoryId;
-    }
+    private Set<Long> tagIds;
 
     public Long getId() {
         return id;
@@ -56,5 +53,21 @@ public class UpdatePostRequest {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Set<Long> getTagIds() {
+        return tagIds;
+    }
+
+    public void setTagIds(Set<Long> tagIds) {
+        this.tagIds = tagIds;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }

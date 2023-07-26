@@ -9,11 +9,13 @@ import one.whr.simple.dto.response.PostPageResponse;
 import one.whr.simple.dto.response.PostResponse;
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
+import one.whr.simple.entity.Tag;
 import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.CategoryNotFoundException;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.service.CategoryService;
 import one.whr.simple.service.PostService;
+import one.whr.simple.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/post")
@@ -33,6 +37,9 @@ public class PostController {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    TagService tagService;
 
 
     @GetMapping("/page/{pageNo}")
@@ -75,11 +82,18 @@ public class PostController {
             if (request.getCategoryId() != null) {
                 category = categoryService.findById(request.getCategoryId());
             } else {
-                category = categoryService.findById(1L);
+                category = categoryService.findById(1L); // default is Uncategorized
             }
             newPost.setCategory(category);
 
+            Set<Tag> tags;
+            if (request.getTagIds() != null) {
+                tags = new HashSet<>(tagService.findAllById(request.getTagIds()));
+                newPost.setTags(tags);
+            }
+
             postService.addNewPost(newPost);
+
 
         } catch (CategoryNotFoundException e) {
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Cannot find category"));
@@ -98,9 +112,19 @@ public class PostController {
             post.setDescription(request.getDescription());
             post.setContent(request.getContent().getBytes());
             post.setUpdatedTime(LocalDateTime.now());
+            post.setCoverUrl(request.getCoverUrl());
 
             Category category = categoryService.findById(request.getCategoryId());
             post.setCategory(category);
+
+            Set<Tag> tags;
+            if (request.getTagIds() != null) {
+                tags = new HashSet<>(tagService.findAllById(request.getTagIds()));
+                post.setTags(tags);
+            } else {
+                post.setTags(null);
+            }
+
             postService.updatePost(post);
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update post successfully"));
 

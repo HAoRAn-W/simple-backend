@@ -2,9 +2,11 @@ package one.whr.simple.dto.response.entity;
 
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
+import one.whr.simple.entity.Tag;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 // String type content
 public class StrPost {
@@ -24,6 +26,8 @@ public class StrPost {
 
     private String coverUrl;
 
+    private Set<Tag> tags;
+
     public StrPost() {
     }
 
@@ -36,6 +40,7 @@ public class StrPost {
         this.content = new String(post.getContent(), StandardCharsets.UTF_8);
         this.category = post.getCategory();
         this.coverUrl = post.getCoverUrl();
+        this.tags = post.getTags();
     }
 
     public Long getId() {
@@ -100,5 +105,13 @@ public class StrPost {
 
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 }
