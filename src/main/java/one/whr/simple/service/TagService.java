@@ -19,12 +19,21 @@ public class TagService {
         return tagRepository.findAllById(tagIds);
     }
 
+    public List<Tag> getTagList() {
+        return tagRepository.findAll();
+    }
+
+
     public void save(Tag tag) {
         tagRepository.save(tag);
     }
 
     public Tag findById(Long id) throws TagNotFoundException {
         return tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException("Cannot find tag"));
+    }
+
+    public void removeTagById(Long id) {
+        tagRepository.deleteById(id);
     }
 
 }

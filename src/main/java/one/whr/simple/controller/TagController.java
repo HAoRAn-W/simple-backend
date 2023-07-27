@@ -4,6 +4,7 @@ import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.request.AddTagRequest;
 import one.whr.simple.dto.request.UpdateTagRequest;
 import one.whr.simple.dto.response.MessageResponse;
+import one.whr.simple.dto.response.TagListResponse;
 import one.whr.simple.entity.Tag;
 import one.whr.simple.exceptions.TagNotFoundException;
 import one.whr.simple.service.TagService;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
@@ -41,4 +44,18 @@ public class TagController {
 
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update tag successfully"));
     }
+
+    @GetMapping("/all")
+    ResponseEntity<?> getTagList() {
+        List<Tag> tags = tagService.getTagList();
+        return ResponseEntity.ok().body(new TagListResponse(MessageCode.SUCCESSFUL, "Get Tag List Successful", tags));
+    }
+
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> deleteTag(@PathVariable Long id) {
+        tagService.removeTagById(id);
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete tag successfully"));
+    }
+
 }
