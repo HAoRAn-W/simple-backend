@@ -5,19 +5,16 @@ import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.request.AddPostRequest;
 import one.whr.simple.dto.request.UpdatePostRequest;
 import one.whr.simple.dto.response.MessageResponse;
-import one.whr.simple.dto.response.PostPageResponse;
 import one.whr.simple.dto.response.PostResponse;
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
 import one.whr.simple.entity.Tag;
-import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.CategoryNotFoundException;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.service.CategoryService;
 import one.whr.simple.service.PostService;
 import one.whr.simple.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -41,24 +38,6 @@ public class PostController {
     @Autowired
     TagService tagService;
 
-
-    @GetMapping("/page/{pageNo}")
-    ResponseEntity<?> getPageList(@PathVariable int pageNo) {
-        Page<PostProjection> postPage = postService.getPaginatedPosts(pageNo, 5);
-        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
-    }
-
-    @GetMapping("/{categoryId}/page/{pageNo}")
-    ResponseEntity<?> getPageListByCategory(@PathVariable Long categoryId, @PathVariable int pageNo) {
-        try {
-            Category category = categoryService.findById(categoryId);
-            Page<PostProjection> postPage = postService.getPaginatedPostsByCategory(pageNo, 5, category);
-            return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
-
-        } catch (CategoryNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "cannot find category"));
-        }
-    }
 
     @GetMapping("{postId}")
     ResponseEntity<?> getPost(@PathVariable Long postId) {
