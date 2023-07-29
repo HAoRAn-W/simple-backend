@@ -2,7 +2,6 @@ package one.whr.simple.service;
 
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
-import one.whr.simple.entity.Tag;
 import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.repository.PostRepository;
