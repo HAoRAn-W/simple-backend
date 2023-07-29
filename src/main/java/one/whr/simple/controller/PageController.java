@@ -37,7 +37,7 @@ public class PageController {
         return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
     }
 
-    @GetMapping("/page/category")
+    @GetMapping("/post/category")
     ResponseEntity<?> getPageListByCategory(@RequestParam Long categoryId, @RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {
         try {
             Category category = categoryService.findById(categoryId);
