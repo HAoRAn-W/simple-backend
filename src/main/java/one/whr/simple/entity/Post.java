@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "POSTS")
+@Table(name = "POSTS", indexes =  @Index(name = "createdTimeIndex", columnList = "createdTime DESC"))
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +15,7 @@ public class Post {
 
 
     @NotNull
+
     private LocalDateTime createdTime;
 
     private LocalDateTime updatedTime;
