@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -53,6 +52,18 @@ public class CategoryController {
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Cannot find category"));
         }
 
+    }
+
+    @GetMapping("/delete/{categoryId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> removeCategory(@PathVariable Long categoryId) {
+        try {
+            categoryService.removeCategory(categoryId);
+
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Cannot find category"));
+        }
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete category successful"));
     }
 
 

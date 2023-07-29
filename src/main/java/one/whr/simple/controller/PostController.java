@@ -114,5 +114,12 @@ public class PostController {
         }
     }
 
+    @GetMapping("/delete/{postId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> removePost(@PathVariable Long postId){
+        postService.removePost(postId);
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete post successfully"));
+    }
+
 
 }

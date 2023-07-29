@@ -51,11 +51,18 @@ public class TagController {
         return ResponseEntity.ok().body(new TagListResponse(MessageCode.SUCCESSFUL, "Get Tag List Successful", tags));
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/delete/{tagId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> deleteTag(@PathVariable Long id) {
-        tagService.removeTagById(id);
+    ResponseEntity<?> deleteTag(@PathVariable Long tagId) {
+        try {
+            tagService.removeTagById(tagId);
+
+        } catch (TagNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.TGA_NOT_FOUND, e.getMessage()));
+
+        }
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete tag successfully"));
     }
+
 
 }
