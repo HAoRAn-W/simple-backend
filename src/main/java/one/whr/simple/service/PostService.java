@@ -2,9 +2,11 @@ package one.whr.simple.service;
 
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
+import one.whr.simple.entity.Tag;
 import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.repository.PostRepository;
+import one.whr.simple.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,10 +14,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class PostService {
     @Autowired
     PostRepository postRepository;
+
+    @Autowired
+    TagRepository tagRepository;
 
     public Page<PostProjection> getPaginatedPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
@@ -42,5 +49,15 @@ public class PostService {
 
     public void updatePost(Post post) {
         postRepository.save(post);
+    }
+
+    public void removePost(Long postId) throws PostNotFoundException {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Can't find post with this id"));
+        Set<Tag> tags = post.getTags();
+        for (Tag tag : tags) {
+            tag.getPosts().remove(post);
+        }
+        tagRepository.saveAll(tags);
+        postRepository.deleteById(postId);
     }
 }
