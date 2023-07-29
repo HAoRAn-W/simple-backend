@@ -4,8 +4,10 @@ import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.PostPageResponse;
 import one.whr.simple.entity.Category;
+import one.whr.simple.entity.Tag;
 import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.CategoryNotFoundException;
+import one.whr.simple.exceptions.TagNotFoundException;
 import one.whr.simple.service.CategoryService;
 import one.whr.simple.service.PostService;
 import one.whr.simple.service.TagService;
@@ -38,7 +40,7 @@ public class PageController {
     }
 
     @GetMapping("/post/category")
-    ResponseEntity<?> getPageListByCategory(@RequestParam Long categoryId, @RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {
+    ResponseEntity<?> getPostPageByCategory(@RequestParam Long categoryId, @RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {
         try {
             Category category = categoryService.findById(categoryId);
             Page<PostProjection> postPage = postService.getPaginatedPostsByCategory(pageNo, pageSize, category);
@@ -47,5 +49,11 @@ public class PageController {
         } catch (CategoryNotFoundException e) {
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "cannot find category"));
         }
+    }
+
+    @GetMapping("/post/tag")
+    ResponseEntity<?> getPostPageByTag(@RequestParam Long tagId, @RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {
+        Page<PostProjection> postPage = postService.getPaginatedPostsByTagId(pageNo, pageSize, tagId);
+        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
     }
 }

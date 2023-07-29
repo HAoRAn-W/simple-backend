@@ -22,4 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<PostProjection> findAllByCategory(Category category, Pageable pageable);
 
+    Page<PostProjection> findAllByTagsId(Long id, Pageable pageable);
+
+
 }

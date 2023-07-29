@@ -2,6 +2,7 @@ package one.whr.simple.service;
 
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
+import one.whr.simple.entity.Tag;
 import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.repository.PostRepository;
@@ -25,6 +26,11 @@ public class PostService {
     public Page<PostProjection> getPaginatedPostsByCategory(int page, int size, Category category) {
         Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
         return postRepository.findAllByCategory(category, pageable);
+    }
+
+    public Page<PostProjection> getPaginatedPostsByTagId(int page, int size, Long tagId) {
+        Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
+        return postRepository.findAllByTagsId(tagId, pageable);
     }
 
     public void addNewPost(Post post) {
