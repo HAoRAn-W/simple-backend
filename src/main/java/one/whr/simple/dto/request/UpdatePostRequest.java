@@ -15,6 +15,8 @@ public class UpdatePostRequest {
 
     private Set<Long> tagIds;
 
+    private Boolean pinned;
+
     public Long getId() {
         return id;
     }
@@ -69,5 +71,13 @@ public class UpdatePostRequest {
 
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
+    }
+
+    public Boolean getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(Boolean pinned) {
+        this.pinned = pinned;
     }
 }

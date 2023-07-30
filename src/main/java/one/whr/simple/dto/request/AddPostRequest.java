@@ -13,6 +13,8 @@ public class AddPostRequest {
 
     private Set<Long> tagIds;
 
+    private Boolean pinned;
+
     public AddPostRequest() {}
 
     public String getTitle() {
@@ -61,5 +63,13 @@ public class AddPostRequest {
 
     public void setTagIds(Set<Long> tagIds) {
         this.tagIds = tagIds;
+    }
+
+    public Boolean getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(Boolean pinned) {
+        this.pinned = pinned;
     }
 }

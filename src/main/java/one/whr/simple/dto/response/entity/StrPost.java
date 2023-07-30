@@ -28,6 +28,8 @@ public class StrPost {
 
     private Set<Tag> tags;
 
+    private Boolean pinned;
+
     public StrPost() {
     }
 
@@ -41,6 +43,7 @@ public class StrPost {
         this.category = post.getCategory();
         this.coverUrl = post.getCoverUrl();
         this.tags = post.getTags();
+        this.pinned = post.getPinned();
     }
 
     public Long getId() {
@@ -113,5 +116,13 @@ public class StrPost {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Boolean getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(Boolean pinned) {
+        this.pinned = pinned;
     }
 }

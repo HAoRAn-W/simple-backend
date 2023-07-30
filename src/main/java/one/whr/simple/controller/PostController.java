@@ -107,6 +107,8 @@ public class PostController {
                 post.setTags(null);
             }
 
+            post.setPinned(request.getPinned());
+
             postService.updatePost(post);
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update post successfully"));
 
