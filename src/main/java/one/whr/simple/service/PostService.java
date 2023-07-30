@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -59,5 +60,9 @@ public class PostService {
         }
         tagRepository.saveAll(tags);
         postRepository.deleteById(postId);
+    }
+
+    public List<PostProjection> getPinnedPosts() {
+        return postRepository.findAllByPinned(true);
     }
 }

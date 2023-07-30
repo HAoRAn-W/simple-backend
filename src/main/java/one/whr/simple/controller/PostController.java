@@ -5,10 +5,12 @@ import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.request.AddPostRequest;
 import one.whr.simple.dto.request.UpdatePostRequest;
 import one.whr.simple.dto.response.MessageResponse;
+import one.whr.simple.dto.response.PinnedPostResponse;
 import one.whr.simple.dto.response.PostResponse;
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
 import one.whr.simple.entity.Tag;
+import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.CategoryNotFoundException;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.service.CategoryService;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -125,5 +128,23 @@ public class PostController {
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete post successfully"));
     }
 
+    @GetMapping("/pin/{postId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> pinPost(@PathVariable Long postId){
+        try {
+            Post post = postService.getPost(postId);
+            post.setPinned(true);
+            postService.updatePost(post);
+        } catch (PostNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, e.getMessage()));
+        }
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "pin post successfully"));
+    }
+
+    @GetMapping("/pin/all")
+    ResponseEntity<?> getPinnedPosts(){
+        List<PostProjection> posts = postService.getPinnedPosts();
+        return ResponseEntity.ok().body(new PinnedPostResponse(MessageCode.SUCCESSFUL, "get pinned list successful", posts));
+    }
 
 }
