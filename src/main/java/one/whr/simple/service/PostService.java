@@ -3,10 +3,12 @@ package one.whr.simple.service;
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.Post;
 import one.whr.simple.entity.Tag;
+import one.whr.simple.entity.User;
 import one.whr.simple.entity.projection.PostProjection;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.repository.PostRepository;
 import one.whr.simple.repository.TagRepository;
+import one.whr.simple.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,9 @@ public class PostService {
 
     @Autowired
     TagRepository tagRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     public Page<PostProjection> getPaginatedPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
@@ -59,6 +64,11 @@ public class PostService {
             tag.getPosts().remove(post);
         }
         tagRepository.saveAll(tags);
+        Set<User> users = post.getFavoriteUsers();
+        for (User user : users) {
+            user.getFavorites().remove(post);
+        }
+        userRepository.saveAll(users);
         postRepository.deleteById(postId);
     }
 

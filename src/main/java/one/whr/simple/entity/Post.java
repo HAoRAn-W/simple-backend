@@ -1,9 +1,12 @@
 package one.whr.simple.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,6 +38,11 @@ public class Post {
     @JoinColumn(name = "category_id")
     @NotNull
     private Category category;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
+    private Set<User> favoriteUsers;
 
     @ManyToMany
     @JoinTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
@@ -130,5 +138,13 @@ public class Post {
 
     public void setPinned(Boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public Set<User> getFavoriteUsers() {
+        return favoriteUsers;
+    }
+
+    public void setFavoriteUsers(Set<User> favoriteUsers) {
+        this.favoriteUsers = favoriteUsers;
     }
 }
