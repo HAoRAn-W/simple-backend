@@ -141,6 +141,19 @@ public class PostController {
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "pin post successfully"));
     }
 
+    @GetMapping("/unpin/{postId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<?> unpinPost(@PathVariable Long postId){
+        try {
+            Post post = postService.getPost(postId);
+            post.setPinned(false);
+            postService.updatePost(post);
+        } catch (PostNotFoundException e) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, e.getMessage()));
+        }
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "unpin post successfully"));
+    }
+
     @GetMapping("/pin/all")
     ResponseEntity<?> getPinnedPosts(){
         List<PostProjection> posts = postService.getPinnedPosts();
