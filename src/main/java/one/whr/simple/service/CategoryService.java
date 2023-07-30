@@ -33,6 +33,10 @@ public class CategoryService {
     }
 
     public void removeCategory(Long categoryId) throws CategoryNotFoundException {
+        if (categoryId == 1L) {
+            // cannot delete default category
+            return;
+        }
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("can't find category"));
 
         // before deleting category, move all posts under this category to default category
