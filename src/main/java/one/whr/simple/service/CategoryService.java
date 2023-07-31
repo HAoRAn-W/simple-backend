@@ -12,16 +12,14 @@ import java.util.List;
 
 @Service
 public class CategoryService {
+    private static volatile Category defaultCategory;
     @Autowired
     CategoryRepository categoryRepository;
-
     @Autowired
     PostRepository postRepository;
 
-    private static volatile Category defaultCategory;
-
     public Category findById(Long id) throws CategoryNotFoundException {
-        return categoryRepository.findById(id).orElseThrow(() ->  new CategoryNotFoundException("Cannot find category"));
+        return categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Cannot find category"));
     }
 
     public List<Category> findAll() {

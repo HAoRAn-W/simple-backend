@@ -4,10 +4,11 @@ import one.whr.simple.entity.projection.PostProjection;
 
 import java.util.List;
 
-public class PostPageResponse extends MessageResponse{
+public class PostPageResponse extends MessageResponse {
 
     List<PostProjection> posts;
     int total;
+
     public PostPageResponse(int code, String message) {
         super(code, message);
     }

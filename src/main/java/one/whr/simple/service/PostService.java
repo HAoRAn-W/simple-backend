@@ -31,17 +31,17 @@ public class PostService {
     UserRepository userRepository;
 
     public Page<PostProjection> getPaginatedPosts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdTime").descending());
         return postRepository.findAllBy(pageable);
     }
 
     public Page<PostProjection> getPaginatedPostsByCategory(int page, int size, Category category) {
-        Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdTime").descending());
         return postRepository.findAllByCategory(category, pageable);
     }
 
     public Page<PostProjection> getPaginatedPostsByTagId(int page, int size, Long tagId) {
-        Pageable pageable = PageRequest.of(page, size,Sort.by("createdTime").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdTime").descending());
         return postRepository.findAllByTagsId(tagId, pageable);
     }
 
@@ -76,7 +76,6 @@ public class PostService {
         userRepository.saveAll(users);
         postRepository.deleteById(postId);
     }
-
 
 
     public List<PostProjection> getPinnedPosts() {

@@ -41,7 +41,7 @@ public class CategoryController {
     @PostMapping("/update")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ResponseEntity<?> updateCategory(@RequestBody UpdateCategoryRequest request) {
-        try{
+        try {
             Category category = categoryService.findById(request.getId());
             category.setName(request.getName());
             category.setCoverUrl(request.getCoverUrl());
@@ -65,8 +65,6 @@ public class CategoryController {
         }
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete category successful"));
     }
-
-
 
 
 }

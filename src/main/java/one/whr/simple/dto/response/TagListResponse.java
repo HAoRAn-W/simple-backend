@@ -4,10 +4,11 @@ import one.whr.simple.entity.Tag;
 
 import java.util.List;
 
-public class TagListResponse extends MessageResponse{
+public class TagListResponse extends MessageResponse {
 
     List<Tag> tags;
-    public TagListResponse(int code, String message,  List<Tag> tags) {
+
+    public TagListResponse(int code, String message, List<Tag> tags) {
         super(code, message);
         this.tags = tags;
     }

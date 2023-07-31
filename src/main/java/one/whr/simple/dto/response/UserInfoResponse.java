@@ -2,7 +2,8 @@ package one.whr.simple.dto.response;
 
 
 import java.util.List;
-public class UserInfoResponse extends MessageResponse{
+
+public class UserInfoResponse extends MessageResponse {
     private Long id;
 
     private String username;

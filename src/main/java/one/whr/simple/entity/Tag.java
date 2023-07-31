@@ -10,17 +10,15 @@ import java.util.Set;
 @Entity
 @Table(name = "TAGS")
 public class Tag {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
-    @Column(unique = true)
-    private String name;
-
     @ManyToMany(mappedBy = "tags")
     @JsonIgnore
     Set<Post> posts;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @NotBlank
+    @Column(unique = true)
+    private String name;
 
     public Tag(String name) {
         this.name = name;

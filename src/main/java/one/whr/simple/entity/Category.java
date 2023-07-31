@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
-@Table(name = "CATEGORIES",uniqueConstraints = {
+@Table(name = "CATEGORIES", uniqueConstraints = {
         @UniqueConstraint(columnNames = "name")
 })
 public class Category {

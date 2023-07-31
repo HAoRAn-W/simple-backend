@@ -121,7 +121,7 @@ public class PostController {
 
     @GetMapping("/delete/{postId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> removePost(@PathVariable Long postId){
+    ResponseEntity<?> removePost(@PathVariable Long postId) {
         try {
             postService.removePost(postId);
         } catch (PostNotFoundException e) {
@@ -132,7 +132,7 @@ public class PostController {
 
     @GetMapping("/pin/{postId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> pinPost(@PathVariable Long postId){
+    ResponseEntity<?> pinPost(@PathVariable Long postId) {
         try {
             Post post = postService.getPost(postId);
             post.setPinned(true);
@@ -145,7 +145,7 @@ public class PostController {
 
     @GetMapping("/unpin/{postId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> unpinPost(@PathVariable Long postId){
+    ResponseEntity<?> unpinPost(@PathVariable Long postId) {
         try {
             Post post = postService.getPost(postId);
             post.setPinned(false);
@@ -157,7 +157,7 @@ public class PostController {
     }
 
     @GetMapping("/pin/all")
-    ResponseEntity<?> getPinnedPosts(){
+    ResponseEntity<?> getPinnedPosts() {
         List<PostProjection> posts = postService.getPinnedPosts();
         return ResponseEntity.ok().body(new PinnedPostResponse(MessageCode.SUCCESSFUL, "get pinned list successful", posts));
     }

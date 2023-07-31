@@ -1,14 +1,14 @@
 package one.whr.simple.dto.response;
 
-import one.whr.simple.entity.Post;
 import one.whr.simple.entity.projection.PostProjection;
 
 import java.util.List;
 
-public class PinnedPostResponse extends MessageResponse{
+public class PinnedPostResponse extends MessageResponse {
 
     List<PostProjection> posts;
-    public PinnedPostResponse(int code, String message,List<PostProjection> posts) {
+
+    public PinnedPostResponse(int code, String message, List<PostProjection> posts) {
         super(code, message);
         this.posts = posts;
     }

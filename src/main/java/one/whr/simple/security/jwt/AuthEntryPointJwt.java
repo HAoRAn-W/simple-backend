@@ -16,8 +16,8 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
      * This method will be triggered anytime unauthenticated users requests a secured HTTP resource
      * and an AuthenticationException is thrown.
      *
-     * @param request http request
-     * @param response http response
+     * @param request       http request
+     * @param response      http response
      * @param authException exception
      * @throws IOException exception
      */

@@ -15,7 +15,8 @@ public class AddPostRequest {
 
     private Boolean pinned;
 
-    public AddPostRequest() {}
+    public AddPostRequest() {
+    }
 
     public String getTitle() {
         return title;

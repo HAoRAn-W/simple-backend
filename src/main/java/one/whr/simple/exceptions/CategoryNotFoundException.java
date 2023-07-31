@@ -1,7 +1,8 @@
 package one.whr.simple.exceptions;
 
-public class CategoryNotFoundException extends Exception{
+public class CategoryNotFoundException extends Exception {
     private final String message;
+
     public CategoryNotFoundException(String message) {
         this.message = message;
     }

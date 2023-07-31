@@ -1,6 +1,6 @@
 package one.whr.simple.exceptions;
 
-public class TagNotFoundException extends Exception{
+public class TagNotFoundException extends Exception {
     private final String message;
 
     public TagNotFoundException(String message) {
