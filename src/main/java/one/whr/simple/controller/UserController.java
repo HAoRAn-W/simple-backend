@@ -2,18 +2,18 @@ package one.whr.simple.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import one.whr.simple.constant.MessageCode;
-import one.whr.simple.dto.response.FavoriteListResponse;
 import one.whr.simple.dto.response.MessageResponse;
+import one.whr.simple.dto.response.PostPageResponse;
 import one.whr.simple.entity.Post;
 import one.whr.simple.entity.User;
 import one.whr.simple.entity.projection.PostProjection;
-import one.whr.simple.entity.projection.UserProjection;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.exceptions.UserNotFoundException;
 import one.whr.simple.security.jwt.JwtUtils;
 import one.whr.simple.service.PostService;
 import one.whr.simple.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -92,19 +92,13 @@ public class UserController {
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.IS_IN_FAVORITE, "In favorite"));
     }
 
-    @GetMapping("/favorite/all")
+    @GetMapping("/favorite")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> getFavoriteList(HttpServletRequest request) {
+    ResponseEntity<?> getFavoriteList(HttpServletRequest request, @RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {
         String token = jwtUtils.getJwtTokenFromCookie(request);
         String username = jwtUtils.getUsernameFromToken(token);
-        Set<PostProjection> favorites;
-        UserProjection user = userService.findBy(username);
-        if (user != null) {
-            favorites = user.getFavorites();
-        } else {
-            return ResponseEntity.ok().body(new FavoriteListResponse(MessageCode.USER_NOTFOUND, "Can't find user", null));
-        }
+        Page<PostProjection> favoritePage = postService.getPaginatedPostsByUserFavorite(username, pageNo, pageSize);
 
-        return ResponseEntity.ok().body(new FavoriteListResponse(MessageCode.SUCCESSFUL, "Get favorite list successfully", favorites));
+        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", favoritePage.toList(), favoritePage.getTotalPages()));
     }
 }

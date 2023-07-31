@@ -45,6 +45,11 @@ public class PostService {
         return postRepository.findAllByTagsId(tagId, pageable);
     }
 
+    public Page<PostProjection> getPaginatedPostsByUserFavorite(String username, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return postRepository.findAllByFavoriteUsersUsername(username, pageable);
+    }
+
     public void addNewPost(Post post) {
         postRepository.save(post);
     }
@@ -71,6 +76,8 @@ public class PostService {
         userRepository.saveAll(users);
         postRepository.deleteById(postId);
     }
+
+
 
     public List<PostProjection> getPinnedPosts() {
         return postRepository.findAllByPinned(true);
