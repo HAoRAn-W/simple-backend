@@ -51,9 +51,9 @@ public class TagController {
         return ResponseEntity.ok().body(new TagListResponse(MessageCode.SUCCESSFUL, "Get Tag List Successful", tags));
     }
 
-    @GetMapping("/delete/{tagId}")
+    @GetMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> deleteTag(@PathVariable Long tagId) {
+    ResponseEntity<?> deleteTag(@RequestParam Long tagId) {
         try {
             tagService.removeTagById(tagId);
 

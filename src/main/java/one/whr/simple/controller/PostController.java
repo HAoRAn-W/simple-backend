@@ -119,9 +119,9 @@ public class PostController {
         }
     }
 
-    @GetMapping("/delete/{postId}")
+    @GetMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> removePost(@PathVariable Long postId) {
+    ResponseEntity<?> removePost(@RequestParam Long postId) {
         try {
             postService.removePost(postId);
         } catch (PostNotFoundException e) {
