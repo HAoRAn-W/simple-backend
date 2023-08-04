@@ -1,6 +1,8 @@
 package one.whr.simple.dto.response;
 
 
+import one.whr.simple.entity.User;
+
 import java.util.List;
 
 public class UserInfoResponse extends MessageResponse {
@@ -12,16 +14,19 @@ public class UserInfoResponse extends MessageResponse {
 
     private List<String> roles;
 
+    private Integer avatarId;
+
     public UserInfoResponse(int code, String message) {
         super(code, message);
     }
 
-    public UserInfoResponse(int code, String message, Long id, String username, String email, List<String> roles) {
+    public UserInfoResponse(int code, String message, User user, List<String> roles) {
         super(code, message);
-        this.id = id;
-        this.username = username;
-        this.email = email;
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
         this.roles = roles;
+        this.avatarId = user.getAvatarId();
     }
 
     public Long getId() {
@@ -54,5 +59,13 @@ public class UserInfoResponse extends MessageResponse {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public Integer getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(Integer avatarId) {
+        this.avatarId = avatarId;
     }
 }

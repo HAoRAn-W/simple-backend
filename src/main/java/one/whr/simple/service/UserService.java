@@ -20,7 +20,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserProjection findBy(String username) {
+    public UserProjection findUserProjectionBy(String username) {
         return userRepository.findAllByUsername(username).stream().findFirst().orElse(null);
     }
 

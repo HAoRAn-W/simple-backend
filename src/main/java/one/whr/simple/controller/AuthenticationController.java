@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,12 +63,19 @@ public class AuthenticationController {
             ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
             ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(userDetails);
 
+
+            Optional<User> optionalUser = userRepository.findByUsername(userDetails.getUsername());
+            if (!optionalUser.isPresent()) {
+                return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "cannot find user"));
+            }
+            User user = optionalUser.get();
+
             List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                     .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString())
-                    .body(new UserInfoResponse(MessageCode.SUCCESSFUL, "Login successful", userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+                    .body(new UserInfoResponse(MessageCode.SUCCESSFUL, "Login successful", user, roles));
         } catch (AuthenticationException e) {
             return ResponseEntity.ok()
                     .body(new UserInfoResponse(MessageCode.LOGIN_FAILED, "Login failed"));

@@ -43,6 +43,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    private Integer avatarId = 0;
+
     public User() {
 
     }
@@ -99,5 +101,13 @@ public class User {
 
     public void setFavorites(Set<Post> favorites) {
         this.favorites = favorites;
+    }
+
+    public Integer getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(Integer avatarId) {
+        this.avatarId = avatarId;
     }
 }
