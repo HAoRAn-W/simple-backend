@@ -24,7 +24,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -46,57 +53,41 @@ public class UserController {
 
     @GetMapping("/favorite/add/{postId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> addFavorite(HttpServletRequest request, @PathVariable Long postId) {
+    ResponseEntity<?> addFavorite(HttpServletRequest request, @PathVariable Long postId) throws PostNotFoundException, UserNotFoundException {
         Post post;
         String token = jwtUtils.getJwtTokenFromCookie(request);
         String username = jwtUtils.getUsernameFromToken(token);
-        try {
-            post = postService.getPost(postId);
-            User user = userService.findByUsername(username);
-            user.getFavorites().add(post);
-            userService.save(user);
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, "Can't find post"));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "Can't find user"));
-        }
+
+        post = postService.getPost(postId);
+        User user = userService.findByUsername(username);
+        user.getFavorites().add(post);
+        userService.save(user);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Favorite post saved"));
     }
 
     @GetMapping("/favorite/remove/{postId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> removeFavorite(HttpServletRequest request, @PathVariable Long postId) {
+    ResponseEntity<?> removeFavorite(HttpServletRequest request, @PathVariable Long postId) throws PostNotFoundException, UserNotFoundException {
         Post post;
         String token = jwtUtils.getJwtTokenFromCookie(request);
         String username = jwtUtils.getUsernameFromToken(token);
-        try {
-            post = postService.getPost(postId);
-            User user = userService.findByUsername(username);
-            user.getFavorites().remove(post);
-            userService.save(user);
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, "Can't find post"));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "Can't find user"));
-        }
+
+        post = postService.getPost(postId);
+        User user = userService.findByUsername(username);
+        user.getFavorites().remove(post);
+        userService.save(user);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Favorite post removed"));
     }
 
     @GetMapping("/favorite/{postId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> queryFavorite(HttpServletRequest request, @PathVariable Long postId) {
+    ResponseEntity<?> queryFavorite(HttpServletRequest request, @PathVariable Long postId) throws PostNotFoundException, UserNotFoundException {
         String token = jwtUtils.getJwtTokenFromCookie(request);
         String username = jwtUtils.getUsernameFromToken(token);
-        try {
-            Post post = postService.getPost(postId);
-            User user = userService.findByUsername(username);
-            if (!user.getFavorites().contains(post)) {
-                return ResponseEntity.ok().body(new MessageResponse(MessageCode.NOT_IN_FAVORITE, "Not in favorite"));
-            }
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "Can't find user"));
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, "Can't find post"));
+        Post post = postService.getPost(postId);
+        User user = userService.findByUsername(username);
+        if (!user.getFavorites().contains(post)) {
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.NOT_IN_FAVORITE, "Not in favorite"));
         }
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.IS_IN_FAVORITE, "In favorite"));
     }
@@ -113,38 +104,31 @@ public class UserController {
 
     @PostMapping("/updateinfo")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> updateUserInfo(HttpServletRequest request, @RequestBody UpdateUserInfoRequest body) {
+    ResponseEntity<?> updateUserInfo(HttpServletRequest request, @RequestBody UpdateUserInfoRequest body) throws UserNotFoundException {
         String token = jwtUtils.getJwtTokenFromCookie(request);
         String username = jwtUtils.getUsernameFromToken(token);
-        try {
-            User user = userService.findByUsername(username);
-            user.setUsername(body.getUsername());
-            user.setEmail(body.getEmail());
-            user.setAvatarId(body.getAvatarId());
-            userService.save(user);
-            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(body.getUsername());
-            ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(body.getUsername());
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                    .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString()).body(new MessageResponse(MessageCode.SUCCESSFUL, "Change user avatar successfully"));
 
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, e.getMessage()));
-        }
+        User user = userService.findByUsername(username);
+        user.setUsername(body.getUsername());
+        user.setEmail(body.getEmail());
+        user.setAvatarId(body.getAvatarId());
+        userService.save(user);
+        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(body.getUsername());
+        ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(body.getUsername());
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString()).body(new MessageResponse(MessageCode.SUCCESSFUL, "Change user avatar successfully"));
     }
 
     @GetMapping("/getinfo")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> getUserInfo(HttpServletRequest request) {
+    ResponseEntity<?> getUserInfo(HttpServletRequest request) throws UserNotFoundException {
         String token = jwtUtils.getJwtTokenFromCookie(request);  // not working
         String username = jwtUtils.getUsernameFromToken(token);
-        try {
-            User user = userService.findByUsername(username);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-            return ResponseEntity.ok().body(new UserInfoResponse(MessageCode.SUCCESSFUL, "get user info successfully", user, roles));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, e.getMessage()));
-        }
+
+        User user = userService.findByUsername(username);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        return ResponseEntity.ok().body(new UserInfoResponse(MessageCode.SUCCESSFUL, "get user info successfully", user, roles));
     }
 }

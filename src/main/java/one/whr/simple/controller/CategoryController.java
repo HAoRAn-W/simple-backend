@@ -12,7 +12,13 @@ import one.whr.simple.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -40,29 +46,18 @@ public class CategoryController {
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> updateCategory(@RequestBody UpdateCategoryRequest request) {
-        try {
-            Category category = categoryService.findById(request.getId());
-            category.setName(request.getName());
-            category.setCoverUrl(request.getCoverUrl());
-            categoryService.addCategory(category);
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update category successful"));
-
-        } catch (CategoryNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Cannot find category"));
-        }
-
+    ResponseEntity<?> updateCategory(@RequestBody UpdateCategoryRequest request) throws CategoryNotFoundException {
+        Category category = categoryService.findById(request.getId());
+        category.setName(request.getName());
+        category.setCoverUrl(request.getCoverUrl());
+        categoryService.addCategory(category);
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update category successful"));
     }
 
     @GetMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> removeCategory(@RequestParam Long categoryId) {
-        try {
-            categoryService.removeCategory(categoryId);
-
-        } catch (CategoryNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Cannot find category"));
-        }
+    ResponseEntity<?> removeCategory(@RequestParam Long categoryId) throws CategoryNotFoundException {
+        categoryService.removeCategory(categoryId);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete category successful"));
     }
 

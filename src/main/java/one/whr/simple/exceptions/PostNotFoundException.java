@@ -1,9 +1,12 @@
 package one.whr.simple.exceptions;
 
-public class PostNotFoundException extends Exception {
+import one.whr.simple.constant.MessageCode;
+
+public class PostNotFoundException extends NotFoundException {
     private final String message;
 
     public PostNotFoundException(String message) {
+        super(MessageCode.POST_NOT_FOUND);
         this.message = message;
     }
 

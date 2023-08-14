@@ -1,7 +1,6 @@
 package one.whr.simple.controller;
 
 import one.whr.simple.constant.MessageCode;
-import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.PostPageResponse;
 import one.whr.simple.entity.Category;
 import one.whr.simple.entity.projection.PostProjection;
@@ -13,7 +12,11 @@ import one.whr.simple.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
@@ -38,15 +41,12 @@ public class PageController {
     }
 
     @GetMapping("/post/category")
-    ResponseEntity<?> getPostPageByCategory(@RequestParam Long categoryId, @RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {
-        try {
-            Category category = categoryService.findById(categoryId);
-            Page<PostProjection> postPage = postService.getPaginatedPostsByCategory(pageNo, pageSize, category);
-            return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
+    ResponseEntity<?> getPostPageByCategory(@RequestParam Long categoryId, @RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize)
+            throws CategoryNotFoundException {
+        Category category = categoryService.findById(categoryId);
+        Page<PostProjection> postPage = postService.getPaginatedPostsByCategory(pageNo, pageSize, category);
+        return ResponseEntity.ok().body(new PostPageResponse(MessageCode.SUCCESSFUL, "Page query successful", postPage.toList(), postPage.getTotalPages()));
 
-        } catch (CategoryNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "cannot find category"));
-        }
     }
 
     @GetMapping("/post/tag")

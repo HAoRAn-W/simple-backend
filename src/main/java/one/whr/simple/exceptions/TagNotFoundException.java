@@ -1,10 +1,12 @@
 package one.whr.simple.exceptions;
 
-public class TagNotFoundException extends Exception {
+import one.whr.simple.constant.MessageCode;
+
+public class TagNotFoundException extends NotFoundException {
     private final String message;
 
     public TagNotFoundException(String message) {
-        super();
+        super(MessageCode.TGA_NOT_FOUND);
         this.message = message;
     }
 

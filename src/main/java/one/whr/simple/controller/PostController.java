@@ -19,7 +19,14 @@ import one.whr.simple.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -43,43 +50,33 @@ public class PostController {
 
 
     @GetMapping("{postId}")
-    ResponseEntity<?> getPost(@PathVariable Long postId) {
+    ResponseEntity<?> getPost(@PathVariable Long postId) throws PostNotFoundException {
         log.info("called");
         Post post;
-        try {
-            post = postService.getPost(postId);
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, e.getMessage()));
-        }
+        post = postService.getPost(postId);
         return ResponseEntity.ok().body(new PostResponse(MessageCode.SUCCESSFUL, "Post found", post));
     }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> addNewPost(@RequestBody AddPostRequest request) {
-        try {
-            Post newPost = new Post(request.getTitle(), request.getDescription(), request.getContent().getBytes(), request.getCoverUrl());
-            newPost.setCreatedTime(LocalDateTime.now());
-            Category category;
-            if (request.getCategoryId() != null) {
-                category = categoryService.findById(request.getCategoryId());
-            } else {
-                category = categoryService.findById(1L); // default is Uncategorized
-            }
-            newPost.setCategory(category);
-
-            Set<Tag> tags;
-            if (request.getTagIds() != null) {
-                tags = new HashSet<>(tagService.findAllById(request.getTagIds()));
-                newPost.setTags(tags);
-            }
-
-            postService.addNewPost(newPost);
-
-
-        } catch (CategoryNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Cannot find category"));
+    ResponseEntity<?> addNewPost(@RequestBody AddPostRequest request) throws CategoryNotFoundException {
+        Post newPost = new Post(request.getTitle(), request.getDescription(), request.getContent().getBytes(), request.getCoverUrl());
+        newPost.setCreatedTime(LocalDateTime.now());
+        Category category;
+        if (request.getCategoryId() != null) {
+            category = categoryService.findById(request.getCategoryId());
+        } else {
+            category = categoryService.findById(1L); // default is Uncategorized
         }
+        newPost.setCategory(category);
+
+        Set<Tag> tags;
+        if (request.getTagIds() != null) {
+            tags = new HashSet<>(tagService.findAllById(request.getTagIds()));
+            newPost.setTags(tags);
+        }
+
+        postService.addNewPost(newPost);
 
         return ResponseEntity.ok()
                 .body(new MessageResponse(MessageCode.SUCCESSFUL, "Add new post success"));
@@ -87,72 +84,53 @@ public class PostController {
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> updatePost(@RequestBody UpdatePostRequest request) {
-        try {
-            Post post = postService.getPost(request.getId());
-            post.setTitle(request.getTitle());
-            post.setDescription(request.getDescription());
-            post.setContent(request.getContent().getBytes());
-            post.setUpdatedTime(LocalDateTime.now());
-            post.setCoverUrl(request.getCoverUrl());
+    ResponseEntity<?> updatePost(@RequestBody UpdatePostRequest request) throws PostNotFoundException, CategoryNotFoundException {
+        Post post = postService.getPost(request.getId());
+        post.setTitle(request.getTitle());
+        post.setDescription(request.getDescription());
+        post.setContent(request.getContent().getBytes());
+        post.setUpdatedTime(LocalDateTime.now());
+        post.setCoverUrl(request.getCoverUrl());
 
-            Category category = categoryService.findById(request.getCategoryId());
-            post.setCategory(category);
+        Category category = categoryService.findById(request.getCategoryId());
+        post.setCategory(category);
 
-            Set<Tag> tags;
-            if (request.getTagIds() != null) {
-                tags = new HashSet<>(tagService.findAllById(request.getTagIds()));
-                post.setTags(tags);
-            } else {
-                post.setTags(null);
-            }
-
-            post.setPinned(request.getPinned());
-
-            postService.updatePost(post);
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update post successfully"));
-
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, "Can't find post to update"));
-        } catch (CategoryNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.CATEGORY_NOT_FOUND, "Can't find category to update"));
+        Set<Tag> tags;
+        if (request.getTagIds() != null) {
+            tags = new HashSet<>(tagService.findAllById(request.getTagIds()));
+            post.setTags(tags);
+        } else {
+            post.setTags(null);
         }
+
+        post.setPinned(request.getPinned());
+
+        postService.updatePost(post);
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Update post successfully"));
     }
 
     @GetMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> removePost(@RequestParam Long postId) {
-        try {
-            postService.removePost(postId);
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, e.getMessage()));
-        }
+    ResponseEntity<?> removePost(@RequestParam Long postId) throws PostNotFoundException {
+        postService.removePost(postId);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Delete post successfully"));
     }
 
     @GetMapping("/pin/{postId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> pinPost(@PathVariable Long postId) {
-        try {
-            Post post = postService.getPost(postId);
-            post.setPinned(true);
-            postService.updatePost(post);
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, e.getMessage()));
-        }
+    ResponseEntity<?> pinPost(@PathVariable Long postId) throws PostNotFoundException {
+        Post post = postService.getPost(postId);
+        post.setPinned(true);
+        postService.updatePost(post);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "pin post successfully"));
     }
 
     @GetMapping("/unpin/{postId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> unpinPost(@PathVariable Long postId) {
-        try {
-            Post post = postService.getPost(postId);
-            post.setPinned(false);
-            postService.updatePost(post);
-        } catch (PostNotFoundException e) {
-            return ResponseEntity.ok().body(new MessageResponse(MessageCode.POST_NOT_FOUND, e.getMessage()));
-        }
+    ResponseEntity<?> unpinPost(@PathVariable Long postId) throws PostNotFoundException {
+        Post post = postService.getPost(postId);
+        post.setPinned(false);
+        postService.updatePost(post);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "unpin post successfully"));
     }
 
@@ -161,5 +139,4 @@ public class PostController {
         List<PostProjection> posts = postService.getPinnedPosts();
         return ResponseEntity.ok().body(new PinnedPostResponse(MessageCode.SUCCESSFUL, "get pinned list successful", posts));
     }
-
 }

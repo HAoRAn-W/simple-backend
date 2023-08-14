@@ -29,7 +29,7 @@ public class RefreshController {
     @PostMapping("/api/refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws UserNotFoundException {
         String refreshToken = jwtUtils.getRefreshJwtTokenFromCookie(request);
-        if (refreshToken != null && refreshToken.length() > 0) {
+        if (refreshToken != null && !refreshToken.isEmpty()) {
             if (jwtUtils.validateJwtRefreshToken(refreshToken)) {
                 String username = jwtUtils.getUsernameFromToken(refreshToken);
                 User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("user not found"));
