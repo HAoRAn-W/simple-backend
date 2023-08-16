@@ -26,13 +26,7 @@ public class PageController {
     PostService postService;
 
     @Autowired
-    TagService tagService;
-
-    @Autowired
     CategoryService categoryService;
-
-    @Autowired
-    UserService userService;
 
     @GetMapping("/post")
     ResponseEntity<?> getPostPage(@RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {
