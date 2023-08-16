@@ -9,6 +9,7 @@ import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.UserInfoResponse;
 import one.whr.simple.entity.Role;
 import one.whr.simple.entity.User;
+import one.whr.simple.exceptions.UserNotFoundException;
 import one.whr.simple.repository.RoleRepository;
 import one.whr.simple.repository.UserRepository;
 import one.whr.simple.security.jwt.JwtUtils;
@@ -24,12 +25,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,7 +58,7 @@ public class AuthenticationController {
     JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> userLogin(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> userLogin(@Valid @RequestBody LoginRequest loginRequest) throws UserNotFoundException {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -64,11 +68,7 @@ public class AuthenticationController {
             ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(userDetails);
 
 
-            Optional<User> optionalUser = userRepository.findByUsername(userDetails.getUsername());
-            if (!optionalUser.isPresent()) {
-                return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_NOTFOUND, "cannot find user"));
-            }
-            User user = optionalUser.get();
+            User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UserNotFoundException("Cannot find user"));
 
             List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
@@ -78,7 +78,7 @@ public class AuthenticationController {
                     .body(new UserInfoResponse(MessageCode.SUCCESSFUL, "Login successful", user, roles));
         } catch (AuthenticationException e) {
             return ResponseEntity.ok()
-                    .body(new UserInfoResponse(MessageCode.LOGIN_FAILED, "Login failed"));
+                    .body(new MessageResponse(MessageCode.LOGIN_FAILED, "Login failed"));
         }
 
     }
