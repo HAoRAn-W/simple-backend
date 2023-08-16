@@ -5,8 +5,8 @@ import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.entity.User;
 import one.whr.simple.exceptions.UserNotFoundException;
-import one.whr.simple.repository.UserRepository;
 import one.whr.simple.security.jwt.JwtUtils;
+import one.whr.simple.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -23,8 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 public class RefreshController {
     @Autowired
     JwtUtils jwtUtils;
+
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @PostMapping("/api/refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws UserNotFoundException {
@@ -32,7 +33,7 @@ public class RefreshController {
         if (refreshToken != null && !refreshToken.isEmpty()) {
             if (jwtUtils.validateJwtRefreshToken(refreshToken)) {
                 String username = jwtUtils.getUsernameFromToken(refreshToken);
-                User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("user not found"));
+                User user = userService.findByUsername(username);
                 ResponseCookie newAccessToken = jwtUtils.generateJwtCookie(user.getUsername());
                 log.info("New Access Token Issued");
                 return ResponseEntity.ok()
