@@ -14,7 +14,7 @@ public class UserInfoResponse extends MessageResponse {
 
     private List<String> roles;
 
-    private Integer avatarId;
+    private String avatarUrl;
 
     public UserInfoResponse(int code, String message) {
         super(code, message);
@@ -26,7 +26,7 @@ public class UserInfoResponse extends MessageResponse {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.roles = roles;
-        this.avatarId = user.getAvatarId();
+        this.avatarUrl = user.getAvatarUrl();
     }
 
     public Long getId() {
@@ -61,11 +61,11 @@ public class UserInfoResponse extends MessageResponse {
         this.roles = roles;
     }
 
-    public Integer getAvatarId() {
-        return avatarId;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatarId(Integer avatarId) {
-        this.avatarId = avatarId;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

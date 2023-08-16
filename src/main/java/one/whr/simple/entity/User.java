@@ -43,7 +43,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    private Integer avatarId = 0;
+    private String avatarUrl;
 
     public User() {
 
@@ -103,11 +103,12 @@ public class User {
         this.favorites = favorites;
     }
 
-    public Integer getAvatarId() {
-        return avatarId;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatarId(Integer avatarId) {
-        this.avatarId = avatarId;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

@@ -1,13 +1,11 @@
 package one.whr.simple.dto.request;
 
-import javax.servlet.http.HttpServletRequest;
-
 public class UpdateUserInfoRequest {
     private String username;
 
     private String email;
 
-    private Integer avatarId;
+    private String avatarUrl;
 
     public String getUsername() {
         return username;
@@ -25,11 +23,11 @@ public class UpdateUserInfoRequest {
         this.email = email;
     }
 
-    public Integer getAvatarId() {
-        return avatarId;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatarId(Integer avatarId) {
-        this.avatarId = avatarId;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

@@ -24,14 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -111,7 +104,7 @@ public class UserController {
         User user = userService.findByUsername(username);
         user.setUsername(body.getUsername());
         user.setEmail(body.getEmail());
-        user.setAvatarId(body.getAvatarId());
+        user.setAvatarUrl(body.getAvatarUrl());
         userService.save(user);
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(body.getUsername());
         ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(body.getUsername());
@@ -122,7 +115,7 @@ public class UserController {
     @GetMapping("/getinfo")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     ResponseEntity<?> getUserInfo(HttpServletRequest request) throws UserNotFoundException {
-        String token = jwtUtils.getJwtTokenFromCookie(request);  // not working
+        String token = jwtUtils.getJwtTokenFromCookie(request);
         String username = jwtUtils.getUsernameFromToken(token);
 
         User user = userService.findByUsername(username);
