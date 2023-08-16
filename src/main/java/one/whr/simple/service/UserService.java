@@ -1,7 +1,6 @@
 package one.whr.simple.service;
 
 import one.whr.simple.entity.User;
-import one.whr.simple.entity.projection.UserProjection;
 import one.whr.simple.exceptions.UserNotFoundException;
 import one.whr.simple.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
