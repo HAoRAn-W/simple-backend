@@ -1,10 +1,13 @@
 package one.whr.simple.dto.response;
 
 
+import lombok.Getter;
+import one.whr.simple.entity.Avatar;
 import one.whr.simple.entity.User;
 
 import java.util.List;
 
+@Getter
 public class UserInfoResponse extends MessageResponse {
     private Long id;
 
@@ -14,7 +17,7 @@ public class UserInfoResponse extends MessageResponse {
 
     private List<String> roles;
 
-    private String avatarUrl;
+    private Avatar avatar;
 
     public UserInfoResponse(int code, String message) {
         super(code, message);
@@ -26,46 +29,27 @@ public class UserInfoResponse extends MessageResponse {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.roles = roles;
-        this.avatarUrl = user.getAvatarUrl();
-    }
-
-    public Long getId() {
-        return id;
+        this.avatar = user.getAvatar();
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public List<String> getRoles() {
-        return roles;
-    }
-
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 }

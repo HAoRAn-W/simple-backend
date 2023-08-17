@@ -26,5 +26,7 @@ public interface MessageCode {
 
     int TGA_NOT_FOUND = 402;
 
+    int AVATAR_NOT_FOUND = 500;
+
 
 }

@@ -53,12 +53,12 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/api/refresh").permitAll()
                 .antMatchers("/api/post/**").permitAll()
                 .antMatchers("/api/category/**").permitAll()
                 .antMatchers("/api/tag/**").permitAll()
                 .antMatchers("/api/page/**").permitAll()
+                .antMatchers("/api/avatar/all").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider((authenticationProvider()));

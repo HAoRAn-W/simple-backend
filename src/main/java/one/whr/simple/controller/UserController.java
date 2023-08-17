@@ -6,13 +6,16 @@ import one.whr.simple.dto.request.UpdateUserInfoRequest;
 import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.PostPageResponse;
 import one.whr.simple.dto.response.UserInfoResponse;
+import one.whr.simple.entity.Avatar;
 import one.whr.simple.entity.Post;
 import one.whr.simple.entity.User;
 import one.whr.simple.entity.projection.PostProjection;
+import one.whr.simple.exceptions.AvatarNotFoundException;
 import one.whr.simple.exceptions.PostNotFoundException;
 import one.whr.simple.exceptions.UserNotFoundException;
 import one.whr.simple.security.jwt.JwtUtils;
 import one.whr.simple.security.services.UserDetailsImpl;
+import one.whr.simple.service.AvatarService;
 import one.whr.simple.service.PostService;
 import one.whr.simple.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AvatarService avatarService;
 
     @GetMapping("/favorite/add/{postId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -97,14 +103,22 @@ public class UserController {
 
     @PostMapping("/updateinfo")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> updateUserInfo(HttpServletRequest request, @RequestBody UpdateUserInfoRequest body) throws UserNotFoundException {
+    ResponseEntity<?> updateUserInfo(HttpServletRequest request, @RequestBody UpdateUserInfoRequest body) throws UserNotFoundException, AvatarNotFoundException {
         String token = jwtUtils.getJwtTokenFromCookie(request);
         String username = jwtUtils.getUsernameFromToken(token);
 
         User user = userService.findByUsername(username);
         user.setUsername(body.getUsername());
         user.setEmail(body.getEmail());
-        user.setAvatarUrl(body.getAvatarUrl());
+        Long avatarId = body.getAvatarId();
+        Avatar avatar;
+        try {
+            avatar = avatarService.findById(avatarId);
+        } catch (AvatarNotFoundException e) {
+            avatar = avatarService.getDefaultAvatar();
+        }
+        user.setAvatar(avatar);
+
         userService.save(user);
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(body.getUsername());
         ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(body.getUsername());

@@ -5,7 +5,7 @@ public class UpdateUserInfoRequest {
 
     private String email;
 
-    private String avatarUrl;
+    private Long avatarId;
 
     public String getUsername() {
         return username;
@@ -23,11 +23,11 @@ public class UpdateUserInfoRequest {
         this.email = email;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public Long getAvatarId() {
+        return avatarId;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatarId(Long avatarId) {
+        this.avatarId = avatarId;
     }
 }
