@@ -12,7 +12,8 @@ import java.util.List;
 
 @Service
 public class CategoryService {
-    private static volatile Category defaultCategory;
+    private volatile Category defaultCategory;
+
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
