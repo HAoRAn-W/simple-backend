@@ -123,7 +123,7 @@ public class UserController {
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(body.getUsername());
         ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(body.getUsername());
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString()).body(new MessageResponse(MessageCode.SUCCESSFUL, "Change user avatar successfully"));
+                .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString()).body(new MessageResponse(MessageCode.SUCCESSFUL, "Change user info successfully"));
     }
 
     @GetMapping("/getinfo")
