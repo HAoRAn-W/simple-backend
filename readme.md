@@ -22,42 +22,19 @@ simple
     └───service
 ```
 
-## Endpoints
+## Endpoints TODO
 
-### Authentication: `/api/auth`
-authentication-related endpoints, like login/logout, signup.
-#### 1. Login: `/login` POST
-Request:
-```json
-{
-  "username": "username",
-  "password": "password"
-}
-```
-#### 2. Signup: `/signup` POST
-Request: 
-```json
-{
-  "username": "unique username",
-  "email": "unique email",
-  "password": "password"
-}
-```
-#### 3. Logout: `/logout` POST
-empty body
 
 ## TODO list
-
-- [ ] redis + like/dislike feature (post and comment)
 
 - [ ] user forget password and reset password
 
 - [ ] manage users
 
-- [ ] exceptions
+- [x] global exception handling
 
-- [ ] error messages
+- [x] error messages
 
-- [ ] show posts of same tag
+- [x] show posts of same tag
 
-- [ ] show posts of same category
+- [x] show posts of same category
