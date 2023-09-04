@@ -4,16 +4,19 @@ import lombok.extern.slf4j.Slf4j;
 import one.whr.simple.constant.EnumRole;
 import one.whr.simple.constant.MessageCode;
 import one.whr.simple.dto.request.LoginRequest;
+import one.whr.simple.dto.request.RequestPasswordRequest;
 import one.whr.simple.dto.request.SignupRequest;
 import one.whr.simple.dto.response.MessageResponse;
 import one.whr.simple.dto.response.UserInfoResponse;
 import one.whr.simple.entity.Role;
 import one.whr.simple.entity.User;
+import one.whr.simple.exceptions.InfoMismatchException;
 import one.whr.simple.exceptions.UserNotFoundException;
 import one.whr.simple.repository.RoleRepository;
 import one.whr.simple.repository.UserRepository;
 import one.whr.simple.security.jwt.JwtUtils;
 import one.whr.simple.security.services.UserDetailsImpl;
+import one.whr.simple.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -25,11 +28,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashSet;
@@ -47,6 +46,9 @@ public class AuthenticationController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     RoleRepository roleRepository;
@@ -113,5 +115,20 @@ public class AuthenticationController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(new MessageResponse(MessageCode.LOGGED_OUT, "You've been logged out!"));
+    }
+
+    @PostMapping("/resetpassword")
+    ResponseEntity<?> resetPassword(@RequestBody RequestPasswordRequest request) throws UserNotFoundException, InfoMismatchException {
+        String username = request.getUsername();
+        User user = userService.findByUsername(username);
+
+        String email = request.getEmail();
+        if (!user.getEmail().equals(email)) {
+            throw new InfoMismatchException(MessageCode.EMAIL_MISMATCH, "Email is not matched");
+        }
+        user.setPassword(encoder.encode(request.getPassword()));
+        userService.save(user);
+
+        return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Reset password success"));
     }
 }

@@ -28,5 +28,7 @@ public interface MessageCode {
 
     int AVATAR_NOT_FOUND = 500;
 
+    int EMAIL_MISMATCH = 600;
+
 
 }
