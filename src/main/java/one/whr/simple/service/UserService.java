@@ -8,11 +8,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-    @Autowired
     UserRepository userRepository;
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public User findByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("cannot find user"));
+    }
+
+    public boolean existsUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean existsEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public void save(User user) {

@@ -19,9 +19,13 @@ import java.util.List;
 @RequestMapping("/api/avatar")
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 public class AvatarController {
+    AvatarService avatarService;
 
     @Autowired
-    AvatarService avatarService;
+    public AvatarController(AvatarService avatarService) {
+        this.avatarService = avatarService;
+    }
+
     @GetMapping("/all")
     ResponseEntity<?> getAllAvatars() {
         List<Avatar> avatars = avatarService.findAll();

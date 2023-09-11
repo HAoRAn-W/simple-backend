@@ -16,11 +16,16 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 @RequestMapping("/api/page")
 public class PageController {
-    @Autowired
+
     PostService postService;
 
-    @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    public PageController(PostService postService, CategoryService categoryService) {
+        this.postService = postService;
+        this.categoryService = categoryService;
+    }
 
     @GetMapping("/post")
     ResponseEntity<?> getPostPage(@RequestParam int pageNo, @RequestParam(defaultValue = "6") int pageSize) {

@@ -32,15 +32,18 @@ import java.util.Set;
 @Slf4j
 public class PostController {
 
-    @Autowired
     PostService postService;
 
-    @Autowired
     CategoryService categoryService;
 
-    @Autowired
     TagService tagService;
 
+    @Autowired
+    public PostController(PostService postService, CategoryService categoryService, TagService tagService) {
+        this.postService = postService;
+        this.categoryService = categoryService;
+        this.tagService = tagService;
+    }
 
     @GetMapping("/{postId}")
     ResponseEntity<?> getPost(@PathVariable Long postId) throws PostNotFoundException {

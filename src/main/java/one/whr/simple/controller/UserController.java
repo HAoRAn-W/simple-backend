@@ -38,17 +38,21 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 @Slf4j
 public class UserController {
-    @Autowired
     PostService postService;
 
-    @Autowired
     JwtUtils jwtUtils;
 
-    @Autowired
     UserService userService;
 
-    @Autowired
     AvatarService avatarService;
+
+    @Autowired
+    public UserController(PostService postService, JwtUtils jwtUtils, UserService userService, AvatarService avatarService) {
+        this.postService = postService;
+        this.jwtUtils = jwtUtils;
+        this.userService = userService;
+        this.avatarService = avatarService;
+    }
 
     @GetMapping("/favorite/add/{postId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")

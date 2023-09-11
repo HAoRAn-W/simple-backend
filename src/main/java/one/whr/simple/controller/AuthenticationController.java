@@ -13,7 +13,6 @@ import one.whr.simple.entity.User;
 import one.whr.simple.exceptions.InfoMismatchException;
 import one.whr.simple.exceptions.UserNotFoundException;
 import one.whr.simple.repository.RoleRepository;
-import one.whr.simple.repository.UserRepository;
 import one.whr.simple.security.jwt.JwtUtils;
 import one.whr.simple.security.services.UserDetailsImpl;
 import one.whr.simple.service.UserService;
@@ -41,23 +40,24 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 @Slf4j
 public class AuthenticationController {
-    @Autowired
     AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     UserService userService;
 
-    @Autowired
     RoleRepository roleRepository;
 
-    @Autowired
     PasswordEncoder encoder;
 
-    @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    public AuthenticationController(AuthenticationManager authenticationManager, UserService userService, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.jwtUtils = jwtUtils;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> userLogin(@Valid @RequestBody LoginRequest loginRequest) throws UserNotFoundException {
@@ -70,40 +70,35 @@ public class AuthenticationController {
             ResponseCookie refreshJwtCookie = jwtUtils.generateRefreshJwtCookie(userDetails);
 
 
-            User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UserNotFoundException("Cannot find user"));
+            User user = userService.findByUsername(userDetails.getUsername());
 
             List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                    .header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString())
-                    .body(new UserInfoResponse(MessageCode.SUCCESSFUL, "Login successful", user, roles));
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).header(HttpHeaders.SET_COOKIE, refreshJwtCookie.toString()).body(new UserInfoResponse(MessageCode.SUCCESSFUL, "Login successful", user, roles));
         } catch (AuthenticationException e) {
-            return ResponseEntity.ok()
-                    .body(new MessageResponse(MessageCode.LOGIN_FAILED, "Login failed"));
+            return ResponseEntity.ok().body(new MessageResponse(MessageCode.LOGIN_FAILED, "Login failed"));
         }
 
     }
 
     @PostMapping("signup")
     public ResponseEntity<?> userSignup(@Valid @RequestBody SignupRequest signupRequest) {
-        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+        if (userService.existsUsername(signupRequest.getUsername())) {
             log.info("Username is already taken");
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.USER_EXIST, "Username is already taken"));
         }
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+        if (userService.existsEmail(signupRequest.getEmail())) {
             log.info("Email is already taken");
             return ResponseEntity.ok().body(new MessageResponse(MessageCode.EMAIL_EXIST, "Email is already taken"));
         }
 
         User user = new User(signupRequest.getUsername(), signupRequest.getEmail(), encoder.encode(signupRequest.getPassword()));
         Set<Role> roleSet = new HashSet<>();
-        Role userRole = roleRepository.findByName(EnumRole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        Role userRole = roleRepository.findByName(EnumRole.ROLE_USER).orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roleSet.add(userRole);
         user.setRoles(roleSet);
 
-        userRepository.save(user);
+        userService.save(user);
 
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "Successfully signup user"));
     }
@@ -112,9 +107,7 @@ public class AuthenticationController {
     public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = jwtUtils.generateEmptyCookie();
         ResponseCookie refreshCookie = jwtUtils.generateEmptyRefreshCookie();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body(new MessageResponse(MessageCode.LOGGED_OUT, "You've been logged out!"));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).header(HttpHeaders.SET_COOKIE, refreshCookie.toString()).body(new MessageResponse(MessageCode.LOGGED_OUT, "You've been logged out!"));
     }
 
     @PostMapping("/resetpassword")

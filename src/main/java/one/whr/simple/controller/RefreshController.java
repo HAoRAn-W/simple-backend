@@ -21,11 +21,15 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 public class RefreshController {
-    @Autowired
     JwtUtils jwtUtils;
 
-    @Autowired
     UserService userService;
+
+    @Autowired
+    public RefreshController(JwtUtils jwtUtils, UserService userService) {
+        this.jwtUtils = jwtUtils;
+        this.userService = userService;
+    }
 
     @PostMapping("/api/refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws UserNotFoundException {
