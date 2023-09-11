@@ -14,10 +14,15 @@ import java.util.List;
 public class CategoryService {
     private volatile Category defaultCategory;
 
-    @Autowired
     CategoryRepository categoryRepository;
-    @Autowired
+
     PostRepository postRepository;
+
+    @Autowired
+    public CategoryService(CategoryRepository categoryRepository, PostRepository postRepository) {
+        this.categoryRepository = categoryRepository;
+        this.postRepository = postRepository;
+    }
 
     public Category findById(Long id) throws CategoryNotFoundException {
         return categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Cannot find category"));

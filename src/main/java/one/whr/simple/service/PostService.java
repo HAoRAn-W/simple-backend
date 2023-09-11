@@ -21,14 +21,18 @@ import java.util.Set;
 
 @Service
 public class PostService {
-    @Autowired
     PostRepository postRepository;
 
-    @Autowired
     TagRepository tagRepository;
 
-    @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    public PostService(PostRepository postRepository, TagRepository tagRepository, UserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.tagRepository = tagRepository;
+        this.userRepository = userRepository;
+    }
 
     public Page<PostProjection> getPaginatedPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdTime").descending());

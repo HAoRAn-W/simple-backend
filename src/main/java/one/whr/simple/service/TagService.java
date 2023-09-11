@@ -13,12 +13,15 @@ import java.util.Set;
 
 @Service
 public class TagService {
-    @Autowired
     TagRepository tagRepository;
 
-    @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    public TagService(TagRepository tagRepository, PostRepository postRepository) {
+        this.tagRepository = tagRepository;
+        this.postRepository = postRepository;
+    }
 
     public List<Tag> findAllById(Set<Long> tagIds) {
         return tagRepository.findAllById(tagIds);

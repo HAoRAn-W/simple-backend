@@ -10,8 +10,13 @@ import java.util.List;
 
 @Service
 public class AvatarService {
-    @Autowired
+
     AvatarRepository avatarRepository;
+
+    @Autowired
+    public AvatarService(AvatarRepository avatarRepository) {
+        this.avatarRepository = avatarRepository;
+    }
 
     private volatile Avatar defaultAvatar;
 
