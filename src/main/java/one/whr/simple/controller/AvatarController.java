@@ -53,7 +53,7 @@ public class AvatarController {
 
     @GetMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<?> addAvatar(@RequestParam Long avatarId) {
+    ResponseEntity<?> addAvatar(@RequestParam Long avatarId) throws AvatarNotFoundException {
        avatarService.delete(avatarId);
         return ResponseEntity.ok().body(new MessageResponse(MessageCode.SUCCESSFUL, "add avatar successful"));
     }

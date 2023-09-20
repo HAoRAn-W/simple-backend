@@ -1,10 +1,10 @@
 package one.whr.simple.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 public class Avatar {
@@ -17,6 +17,10 @@ public class Avatar {
 
     @NotBlank
     private String url;
+
+    @OneToMany(mappedBy = "avatar")
+    @JsonIgnore  // REMEMBER to add @JsonIgnore, otherwise will cause infinite loop.
+    private List<User> users;
 
     public Avatar(String name, String url) {
         this.name = name;
@@ -49,5 +53,13 @@ public class Avatar {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
