@@ -28,7 +28,6 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/post")
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 @Slf4j
 public class PostController {
 
