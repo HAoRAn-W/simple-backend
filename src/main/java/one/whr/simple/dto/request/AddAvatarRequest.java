@@ -5,11 +5,6 @@ public class AddAvatarRequest {
 
     private String avatarUrl;
 
-    public AddAvatarRequest(String name, String avatarUrl) {
-        this.name = name;
-        this.avatarUrl = avatarUrl;
-    }
-
     public String getName() {
         return name;
     }

@@ -7,12 +7,6 @@ public class UpdateAvatarRequest {
 
     private String avatarUrl;
 
-    public UpdateAvatarRequest(Long avatarId, String name, String avatarUrl) {
-        this.avatarId = avatarId;
-        this.name = name;
-        this.avatarUrl = avatarUrl;
-    }
-
     public Long getAvatarId() {
         return avatarId;
     }
