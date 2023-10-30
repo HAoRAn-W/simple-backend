@@ -6,7 +6,7 @@ public class TagNotFoundException extends NotFoundException {
     private final String message;
 
     public TagNotFoundException(String message) {
-        super(MessageCode.TGA_NOT_FOUND);
+        super(MessageCode.TAG_NOT_FOUND);
         this.message = message;
     }
 

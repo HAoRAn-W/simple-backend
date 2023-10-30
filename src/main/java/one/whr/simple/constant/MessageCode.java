@@ -24,7 +24,7 @@ public interface MessageCode {
 
     int NOT_IN_FAVORITE = 401;
 
-    int TGA_NOT_FOUND = 402;
+    int TAG_NOT_FOUND = 402;
 
     int AVATAR_NOT_FOUND = 500;
 
